@@ -55,6 +55,8 @@ You can also find all the tutorial notebooks and code here:
 
 https://github.com/anyscale/academy
 
+Either clone the repo or download the latest release (in the Releases tab).
+
 NOTES:
 
 1. To save any edits you make to a notebook, download it using the File > Download menu item in Jupyter.
