@@ -35,11 +35,11 @@ do
 
 Greetings!
 
-Thank you for registering for the live Anyscale Academy "Ray Crash Course", May 27, 2020, 10AM Pacific.
+Thank you for registering for the live Anyscale Academy "Reinforcement Learning with Ray RLlib", June 24, 2020, 10AM Pacific.
 
 If you decide you can't make it, please update your registration using the URL Eventbrite emailed you. Or, try this URL:
 
-https://www.eventbrite.com/e/anyscale-academy-instructor-led-introduction-to-ray-tickets-105019441978
+https://www.eventbrite.com/e/anyscale-academy-reinforcement-learning-with-ray-rllib-tickets-105573573400
 
 Before the class starts, click the following URLs. One opens a Jupyter Lab environment for the tutorials and the other opens the Ray Dashboard:
 
@@ -63,7 +63,7 @@ NOTES:
 2. If you run into problems, paste the session name above into the Zoom Q&A window and describe the issue.
 3. Need help before or after the event? Send email to academy@anyscale.com or ask for help in the #tutorials channel in the Ray slack.
 
-Don't forget to visit our Events page, https://anyscale.com/events for future tutorial and "Ray Summit Connect" events this summer. Videos of past events can be found there, too.
+Don't forget to visit our Events page, https://anyscale.com/events for future tutorial and "Ray Summit Connect" events this Summer and Fall. Videos of past events can be found there, too.
 
 
 See you soon!
