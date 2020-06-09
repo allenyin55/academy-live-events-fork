@@ -49,7 +49,7 @@ Ray Dashboard:       $durl
 
 Click this zoom link to join the live tutorial:
 
-https://zoom.us/j/98719676934
+https://zoom.us/j/92969464830
 
 You can also find all the tutorial notebooks and code here:
 
