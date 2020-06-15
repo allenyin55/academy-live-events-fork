@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+# TODO: Rather than fire all of them at once, do 20 or so at a time.
+
 script_name=$0
 name_prefix="academy-user"
 M=1
@@ -34,12 +36,13 @@ done
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
 compute_range ${range[@]} | while read M N M0 N0
 do
-	echo "Creating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N"
+	echo "Creating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N. Writing logs to log directory."
 
 	for n in {$M..$N}
 	do
 		n0=$(zero_pad $n)
-		echo "Creating session $n0, named ${name_prefix}-${n0}..."
-		$NOOP anyscale start --session-name ${name_prefix}-${n0} &
+		npn=${name_prefix}-${n0}
+		echo "Creating session $n0, named $npn..."
+		$NOOP anyscale start --session-name $npn > log/create-$npn.log 2>&1 &
 	done
 done
