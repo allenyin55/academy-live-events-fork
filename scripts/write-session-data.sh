@@ -28,7 +28,7 @@ do
 done
 
 echo "Read session data from stdin (exit with ^D or end of file):" >&2
-sed -e 's/,/ /g' | while read session id ip token durl jurl
+sed -e 's/,/ /g' | while read session id ip token jurl durl tburl email_ignore
 do
 	[[ $session = "SESSION" ]] && continue
 	cat << EOF
@@ -41,15 +41,18 @@ If you decide you can't make it, please update your registration using the URL E
 
 https://www.eventbrite.com/e/anyscale-academy-reinforcement-learning-with-ray-rllib-tickets-105573573400
 
-Before the class starts, click the following URLs. One opens a Jupyter Lab environment for the tutorials and the other opens the Ray Dashboard:
+Here is the name of your online "session" and the URLs you will use during class
 
 Your "session" name: $session
 Jupyter Lab:         $jurl
 Ray Dashboard:       $durl
+TensorBoard:         $tburl
+
+You'll mostly use the Jupyter Lab environment for the tutorials. The Ray Dashboard is used to observe performance characteristics. TensorBoard is used in several tutorials to examine the results of model training, etc.
 
 Click this zoom link to join the live tutorial:
 
-https://zoom.us/j/92969464830
+https://zoom.us/j/97296067959?pwd=b01yelp5U1lUZC81cG5jR0JFOGdtZz09
 
 You can also find all the tutorial notebooks and code here:
 
@@ -63,7 +66,7 @@ NOTES:
 2. If you run into problems, paste the session name above into the Zoom Q&A window and describe the issue.
 3. Need help before or after the event? Send email to academy@anyscale.com or ask for help in the #tutorials channel in the Ray slack.
 
-Don't forget to visit our Events page, https://anyscale.com/events for future tutorial and "Ray Summit Connect" events this Summer and Fall. Videos of past events can be found there, too.
+Don't forget to visit our Events page, https://anyscale.com/events for future tutorial and other online events this Summer and Fall. Videos of past events can be found there, too.
 
 
 See you soon!

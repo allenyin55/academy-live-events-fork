@@ -51,7 +51,10 @@ do
 		done
 done
 
-echo "SESSION,ID,DASHBOARD_IP,JUPYTER_TOKEN,DASHBOARD_URL,JUPYTER_URL"
+# The "assigned email" field is blank. It's here for convenience when importing the
+# CSV file into a spreadsheet to allow users to self-assign themselves a session,
+# e.g., for Anyscale in-house testing.
+echo "SESSION,ID,DASHBOARD_IP,JUPYTER_TOKEN,JUPYTER_URL,DASHBOARD_URL,TENSORBOARD_URL,ASSIGNED_EMAIL"
 for session in ${sessions[@]}
 do
 	id=$sessions_ids[$session]
@@ -59,7 +62,9 @@ do
 	token=$sessions_tokens[$session]
 	durl="http://$ip:8081/auth/?token=$token&redirect_to=dashboard"
 	jurl="https://anyscale.dev/sessions/$id/jupyter/lab?token=$token"
-	echo "$session,$id,$ip,$token,$durl,$jurl"
+	turl="https://anyscale.dev/sessions/$id/auth/?token=$token&session_id=$id&redirect_to=tensorboard"
+
+	echo "$session,$id,$ip,$token,$jurl,$durl,$turl,"
 done
 
 

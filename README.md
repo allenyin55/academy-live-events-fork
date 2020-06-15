@@ -10,54 +10,83 @@ The working assumption at this time is that you will create a single platform ac
 
 ## Setup Beforehand
 
+In most of the command examples below, I'll assume your current working directory is the root directory of your local copy if the [`academy` repo](https://github.com/anyscale/academy). In some cases, I'll assume the [`academy-live-events` repo](https://github.com/anyscale/academy) is a sister directory, i.e.,:
+
+```
+/Users/me/work/academy
+/Users/me/work/academy-live-events
+```
+
 ### Download the Academy Repo
 
 Download a version of the [Academy repo](https://github.com/anyscale/academy) that you want to teach. If you cloned the repo instead, I recommend copying it to another folder and deleting the `.git` directory, so it's not synched up to the sessions.
-
-### Clean Up the Directory Tree
-
-Remove all files you don't want in the sessions. In our very first live event, I accidentally left some files with attendee email addresses and other information in my work directory. We had to manually remove them from all the sessions at the last minute.
-
-> **Note:** A feature is being added to the platform to provide a `.gitignore`-like functionality to prevent this problem.
-
-### Copy the ray-project Folder
-
-Copy the `ray-project` folder here to the work directory. Edit to taste. In particular, consider the following:
-
-1. Delete `ray-project/project-id` if any.
-2. Pick a project name for the date or tutorial topic, e.g., `academy-2020-05-27`:
-    * Change `cluster_name` in `cluster.yaml` to this name.
-    * Change `name` in `project.yaml` to this name.
-3. Adjust the instance type used.
-4. Change `max_workers` in `cluster.yaml` to be > 1.
-
-### Copy the scripts Folder
-
-Recall what I said above about cleaning the directory. We don't really want the `scripts` to be pushed up to the head node, although it's mostly harmless. However, we need it in the work directory, so just copy the `scripts` directory here to your project work directory.
-
-### Update the Anyscale Command
-
-You **must** use the latest command, not because of any features it offers, but because it will warn you **incessantly** that you need to update and those messages will mess up parsing of command output in the scripts used below.
-
-```shell
-pip install -U anyscale
-```
 
 ### Change to Your Working Directory
 
 In what follows, you'll want to be in the project work directory from which the Academy will be synced, etc.
 
+### Clean Up the Directory Tree
+
+Remove all files you don't want in the sessions. In our very first live event, I accidentally left some files with attendee email addresses and other information in my work directory. We had to manually remove them from all the sessions at the last minute.
+
+Run the script `tools/cleanup.sh` to see what temporary files exist, like checkpoints and caches, that you might want to delete. The following script will just delete them (be careful!!):
+
+```shell
+tools/cleanup.sh | while read x; do rm -rf $x; done
+```
+
+> **Note:** A feature is being added to the platform to provide a `.gitignore`-like functionality to prevent this problem.
+
+### Copy the ray-project Folder
+
+From the `academy-live-events` repo (i.e., where _this_ README lives), copy the `ray-project` folder here to the work (current) directory. I actually try to keep them in sync, but consider the `academy-live-events` to be _canonical_.
+
+```shell
+rm -rf ray-project
+cp -r ../academy-live-events/ray-project ray-project
+```
+
+Edit to taste. In particular, consider the following:
+
+1. Delete `ray-project/project-id` if any.
+2. Pick a project name for the date or tutorial topic, e.g., `academy-2020-05-27`:
+    * Change `cluster_name` in `cluster.yaml` to this name.
+    * Change `name` in `project.yaml` to this name.
+3. Adjust the instance type used, as necessary.
+4. Change `max_workers` in `cluster.yaml` to be > 1, as necessary.
+5. Make sure the `ray-projects/requirements.txt` file is equivalent to the `academy/requirements.txt` file. This ensures the proper `pip install ...` commands are run in the new cluster.
+
+### Copy the scripts Folder
+
+Recall what I said above about cleaning the directory. We don't really want the `scripts` to be pushed up to the head node, although it's mostly harmless. However, we need it in the work directory, so just copy the `academy-live-events/scripts` directory to the project work directory.
+
+```shell
+cp -r ../academy-live-events/scripts scripts
+```
+
+### Update the Anyscale Command
+
+You **must** use the latest command, not necessarily because of any features it offers, but because it will warn you **incessantly** that you need to update and those messages will mess up parsing the command output in the scripts used below.
+
+```shell
+pip install -U anyscale
+```
+
 ## Create the Anyscale Platform Account
 
-You may want to use a special account separate from your personal one, although I can't think of a good reason...
+You may want to use a special account separate from your personal one, although I can't think of a good reason for doing this...
 
 ## Create the Project
+
+Use the same name you used in the `cluster.yaml` and `project.yaml` files above:
 
 ```shell
 anyscale init --name academy-2020-05-27 --requirements ray-project/requirements.txt
 ```
 
-I don't know if either argument is required since this information is in the `ray-project` files.
+(TODO: I don't know if either argument is required since this information is in the `ray-project` files.)
+
+This takes a while, as it makes a snapshot of up your local project directory!
 
 When finished, open and navigate to your project. You'll probably find this useful to keep open:
 
@@ -87,6 +116,8 @@ Where the default session name prefix `academy-user` is shown and `NNN` is a zer
 
 > **Note:** A lower-bound argument is supported so you can run this command as many times as necessary, starting where you "left off" from the last run.
 
+It appears this command will creat a snapshot of your project _for every single session_ created, so expect to wait awhile.
+
 > **Tips:**
 >
 > 1. All the `scripts` have `--help` options.
@@ -94,7 +125,7 @@ Where the default session name prefix `academy-user` is shown and `NNN` is a zer
 > 3. It takes a _very long time_ for each session to initialize, about 8-10 minutes.
 > 4. Click the `logs` link for a session to see how it's doing.
 
-I once tried initializing with a session snapshot, but it didn't seem to improve the time, although if the snapshot contains the changes for some or all of the subsequent setup steps, that would be worth it. If so, `create-sessions.sh` will need to be modified to include an argument for a snapshot id.
+TODO: I once tried initializing with a session snapshot, but it didn't seem to improve the time, although if the snapshot contains the changes for some or all of the subsequent setup steps, that would be worth it. If so, `create-sessions.sh` will need to be modified to include an argument for a snapshot id.
 
 ## Fix the Sessions
 
@@ -104,7 +135,9 @@ At this time, some additional steps have to be done separately. That's what `scr
 scripts/fix-sessions.sh --name academy-user --project academy-2020-05-27 M N
 ```
 
-Where again the `--name academy-user` is the default value for that option and the `--project` argument uses the same name used above for the _project_. It's neeed here for the `/usr/ubuntu/<project_name>` directory.
+Where again the `--name academy-user` is optional; again this is the default value used for the session name prefix. The `--project` argument is required. It uses the same name used above for the _project_. It's needed here for the `/usr/ubuntu/<project_name>` directory.
+
+TODO: Extract the project name from `cluster.yaml` so this argument is no longer required.
 
 This script uses `anyscale ray exec-cmd` to run an Academy repo script `/usr/ubuntu/<project_name>/tools/fix-jupyter.sh` that will be on the head node by this point.
 
@@ -113,7 +146,7 @@ This script uses `anyscale ray exec-cmd` to run an Academy repo script `/usr/ubu
 A sanity check to make sure the Jupyter Lab extensions are properly installed and up to date. This script is very similar to `fix-sessions.sh` in structure and arguments:
 
 ```shell
-scripts/check-sessions.sh --name academy-user --project academy-2020-05-27 M N
+scripts/check-sessions.sh --name academy-user M N
 ```
 If successful, you'll see output like extension `@pyviz/jupyterlab_pyviz` is installed and activated (`OK` in green color) and the version will be 1.0.X.
 
@@ -121,7 +154,7 @@ If you see anything other than this, like a version number 0.5.X, something is s
 
 ## Retrieve Session Information
 
-Since we don't give attendees platform accounts at this time, we instead give them URLs for Jupyter and Ray Dashboard, plus the Jupyter token needed to access these pages. This is the only access they have. (It's weak; they can start a terminal in Jupyter and muck around that way...)
+Since we don't give attendees platform accounts at this time, we instead give them URLs for Jupyter, the Ray Dashboard, and TensorBoard, plus the Jupyter token needed to access these pages. This is the only access they have. (It's weak; they can start a terminal in Jupyter and muck around that way...)
 
 ```shell
 scripts/get-sessions.sh > sessions.csv
