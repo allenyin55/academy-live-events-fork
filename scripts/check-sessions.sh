@@ -9,12 +9,20 @@ tagline="Check that Juypter Lab is properly configured in sessions"
 dir=$(dirname $0)
 . $dir/utils.sh
 
+help2() {
+	cat <<EOF
+WARNING: It currently isn't possible to run this in parallel reliably, so this script
+runs ONE AT A TIME, which is very slow.
+EOF
+}
+
 range=()
 while [[ $# -gt 0 ]]
 do
 	case $1 in
 		-h|--help)
 			help
+			help2
 			exit 0
 			;;
 		-n|--name)
@@ -46,7 +54,7 @@ do
 		then
 			anyscale ray exec-cmd "$npn" \
 				"/home/ubuntu/anaconda3/bin/jupyter labextension list" \
-				> log/check-$npn.log 2>&1 &
+				> log/check-$npn.log 2>&1
 		else
 			$NOOP anyscale ray exec-cmd "$npn" \
 				"/home/ubuntu/anaconda3/bin/jupyter labextension list"

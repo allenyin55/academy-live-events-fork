@@ -36,11 +36,17 @@ do
 	sessions+=("$session")
 done
 
+# The "assigned email" field is blank. It's here for convenience when importing the
+# CSV file into a spreadsheet to allow users to self-assign themselves a session,
+# e.g., for Anyscale in-house testing.
+echo "SESSION,ID,DASHBOARD_IP,JUPYTER_TOKEN,JUPYTER_URL,DASHBOARD_URL,TENSORBOARD_URL,ASSIGNED_EMAIL"
+
 declare -A sessions_ips
 declare -A sessions_ids
 declare -A sessions_tokens
 for session in ${sessions[@]}
 do
+	echo "Session: $session" >&2
 	sessions_ips[$session]=$(anyscale ray get-head-ip $session 2> /dev/null)
 	anyscale ray exec-cmd $session '~/anaconda3/bin/jupyter notebook list' | \
 		grep '^http' | sed -e 's?.*sessions/\([0-9]*\)/.*token=\([^ ]*\).*?\1 \2?' | \
@@ -49,14 +55,7 @@ do
 			sessions_ids[$session]=$session_id
 			sessions_tokens[$session]=$token
 		done
-done
 
-# The "assigned email" field is blank. It's here for convenience when importing the
-# CSV file into a spreadsheet to allow users to self-assign themselves a session,
-# e.g., for Anyscale in-house testing.
-echo "SESSION,ID,DASHBOARD_IP,JUPYTER_TOKEN,JUPYTER_URL,DASHBOARD_URL,TENSORBOARD_URL,ASSIGNED_EMAIL"
-for session in ${sessions[@]}
-do
 	id=$sessions_ids[$session]
 	ip=$sessions_ips[$session]
 	token=$sessions_tokens[$session]

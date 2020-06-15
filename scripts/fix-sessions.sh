@@ -14,13 +14,16 @@ help() {
 	cat <<EOF
 $script_name: $tagline
 
-Usage: $script_name [-h|--help] [-n|--name name] -p|--project name [N | M N | M-N | M:N]
+Usage: $script_name [-h|--help] [-n|--name name] [-p|--project name] [N | M N | M-N | M:N]
 Where:
 	-h | --help           Print this message and exit.
 	-n | --name name      The name prefix for the sessions. Default is "$name_prefix". The number will be appended to it.
 	-p | --project name   The name of your Anyscale project; will correspond to /usr/ubuntu/<project_name> directory.
+						  Defaults to the value for "cluster_name" in ray-project/cluster.yaml.
 	N | M N | M-N | M:N   Four ways to specify how many sessions to create or a range of numbers from N-M, inclusive.
 	                      With one value N, M defaults to 1. Default is $M-$N.
+WARNING: It currently isn't possible to run this in parallel reliably, so this script
+runs ONE AT A TIME, which is very slow.
 EOF
 }
 
@@ -51,7 +54,8 @@ do
 	shift
 done
 
-[[ -z $project_name ]] && error "You must specify the project name"
+[[ -z $project_name ]] && project_name=$(get_project_name)
+[[ -z $project_name ]] && error "Failed to get the project name from $DEFAULT_CLUSTER_YAML. Fix that file or specify the project name here."
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
 compute_range ${range[@]} | while read M N M0 N0
@@ -68,7 +72,7 @@ do
 		then
 			anyscale ray exec-cmd "$npn" \
 				"/home/ubuntu/$project_name/tools/fix-jupyter.sh -j /home/ubuntu/anaconda3/bin/jupyter" \
-				> log/fix-$npn.log 2>&1 &
+				> log/fix-$npn.log 2>&1
 		else
 			$NOOP anyscale ray exec-cmd "$npn" \
 				"/home/ubuntu/$project_name/tools/fix-jupyter.sh -j /home/ubuntu/anaconda3/bin/jupyter"

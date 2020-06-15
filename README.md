@@ -135,22 +135,24 @@ At this time, some additional steps have to be done separately. That's what `scr
 scripts/fix-sessions.sh --name academy-user --project academy-2020-05-27 M N
 ```
 
-Where again the `--name academy-user` is optional; again this is the default value used for the session name prefix. The `--project` argument is required. It uses the same name used above for the _project_. It's needed here for the `/usr/ubuntu/<project_name>` directory.
-
-TODO: Extract the project name from `cluster.yaml` so this argument is no longer required.
+Where again the `--name academy-user` is optional and the default value is shown. The `--project` argument is also optional. By default, it uses the name for the project in `ray-project/cluster.yaml`. It must be the same name used above when creating the project. It's needed here for the `/usr/ubuntu/<project_name>` directory in the head node.
 
 This script uses `anyscale ray exec-cmd` to run an Academy repo script `/usr/ubuntu/<project_name>/tools/fix-jupyter.sh` that will be on the head node by this point.
+
+> **WARNING:** This script runs synchronously through each session, one at a time, because of problems with the Anyscale gateway getting overwhelmed when too many requests are made.
 
 ## Check the Sessions
 
 A sanity check to make sure the Jupyter Lab extensions are properly installed and up to date. This script is very similar to `fix-sessions.sh` in structure and arguments:
 
 ```shell
-scripts/check-sessions.sh --name academy-user M N
+scripts/check-sessions.sh M N
 ```
 If successful, you'll see output like extension `@pyviz/jupyterlab_pyviz` is installed and activated (`OK` in green color) and the version will be 1.0.X.
 
 If you see anything other than this, like a version number 0.5.X, something is still wrong.
+
+> **WARNING:** This script runs synchronously through each session, one at a time, because of problems with the Anyscale gateway getting overwhelmed when too many requests are made.
 
 ## Retrieve Session Information
 
@@ -164,6 +166,7 @@ This will write the data as CSV content, so it's best to redirect to a file as s
 
 Then, edit the file to remove any sessions you don't want to provide to students, e.g., the sessions you and your co-instructors will use!!
 
+> **WARNING:** This script has to run synchronously through the sessions.
 
 ## Write Email Boilerplate
 

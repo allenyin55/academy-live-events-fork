@@ -1,5 +1,7 @@
 # Source this file to load common utilities.
 
+DEFAULT_CLUSTER_YAML="ray-project/cluster.yaml"
+
 help() {
 	cat <<EOF
 $script_name: $tagline.
@@ -44,6 +46,7 @@ zero_pad() {
 # split_range M:N
 # split_range M-N
 # split_range N  # implies M==1
+# If N<M, the scripts will actually count DOWN from M to N!
 split_range() {
 	echo "$@" | sed -e 's/[:-]/ /' | while read min max
 	do
@@ -76,4 +79,10 @@ compute_range() {
 	M0=$(zero_pad $M)
 	N0=$(zero_pad $N)
 	echo $M $N $M0 $N0
+}
+
+get_project_name() {
+	yaml="$@"
+	[[ -z $yaml ]] && yaml=$DEFAULT_CLUSTER_YAML
+	grep cluster_name "$yaml" | sed -e 's/^[^:]*: *\(.*\)/\1/'
 }
