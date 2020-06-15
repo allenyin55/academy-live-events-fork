@@ -208,3 +208,11 @@ If you do any bug fixes to the Academy code, such as the notebooks, push the cha
     * Share with them a Google spreadsheet with the list of the extra session URLs, which they can hand out to people who need them during the event.
     * Tell them, when a session has been allocated, mark it in the spreadsheet!!
 
+## After the Event
+
+Tell the students you will leave the sessions running for some additional hours (2-4?), then shut them down. You can do that with this script:
+
+```shell
+scripts/terminate-sessions.sh M N
+```
+

@@ -1,15 +1,18 @@
 #!/usr/bin/env zsh
 
-script_name=$0
-tagline="Write the session names, session ids, head-node IP addresses, juypter tokens, and URLs."
+# Import this BEFORE defining values like "cmd_opts"
 dir=$(dirname $0)
 . $dir/utils.sh
 
-# Override help in utils.sh
-help() {
-	empty_help
-}
+script_name=$0
+tagline="Write the session names, session ids, head-node IP addresses, juypter tokens, and URLs."
+cmd_opts=(session_name range)
+post_help_messages=slow_warning
 
+range=()
+name_prefix=$DEFAULT_NAME_PREFIX
+let M=$DEFAULT_M
+let N=$DEFAULT_N
 while [[ $# -gt 0 ]]
 do
 	case $1 in
@@ -17,8 +20,15 @@ do
 			help
 			exit 0
 			;;
-		*)
+		-n|--name)
+			shift
+			name_prefix=$1
+			;;
+		-*)
 			error "Unexpected argument $1"
+			;;
+		*)
+			range+=($1)
 			;;
 	esac
 	shift
@@ -41,29 +51,33 @@ done
 # e.g., for Anyscale in-house testing.
 echo "SESSION,ID,DASHBOARD_IP,JUPYTER_TOKEN,JUPYTER_URL,DASHBOARD_URL,TENSORBOARD_URL,ASSIGNED_EMAIL"
 
-declare -A sessions_ips
-declare -A sessions_ids
-declare -A sessions_tokens
-for session in ${sessions[@]}
+[[ ${#range[@]} -eq 0 ]] && range=($M $N)
+compute_range ${range[@]} | while read M N M0 N0
 do
-	echo "Session: $session" >&2
-	sessions_ips[$session]=$(anyscale ray get-head-ip $session 2> /dev/null)
-	anyscale ray exec-cmd $session '~/anaconda3/bin/jupyter notebook list' | \
-		grep '^http' | sed -e 's?.*sessions/\([0-9]*\)/.*token=\([^ ]*\).*?\1 \2?' | \
-		while read session_id token
-		do
-			sessions_ids[$session]=$session_id
-			sessions_tokens[$session]=$token
-		done
+	echo "Getting session data for sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:" >&2
 
-	id=$sessions_ids[$session]
-	ip=$sessions_ips[$session]
-	token=$sessions_tokens[$session]
-	durl="http://$ip:8081/auth/?token=$token&redirect_to=dashboard"
-	jurl="https://anyscale.dev/sessions/$id/jupyter/lab?token=$token"
-	turl="https://anyscale.dev/sessions/$id/auth/?token=$token&session_id=$id&redirect_to=tensorboard"
+	for n in {$M..$N}
+	do
+		n0=$(zero_pad $n)
+		npn=${name_prefix}-${n0}
+		if [[ -z $NOOP ]]
+		then
+			ip=$(anyscale ray get-head-ip $npn 2> /dev/null)
+			anyscale ray exec-cmd "$npn" '~/anaconda3/bin/jupyter notebook list' | \
+				grep '^http' | sed -e 's?.*sessions/\([0-9]*\)/.*token=\([^ ]*\).*?\1 \2?' | \
+				while read id token
+				do
+					durl="http://$ip:8081/auth/?token=$token&redirect_to=dashboard"
+					jurl="https://anyscale.dev/sessions/$id/jupyter/lab?token=$token"
+					turl="https://anyscale.dev/sessions/$id/auth/?token=$token&session_id=$id&redirect_to=tensorboard"
 
-	echo "$session,$id,$ip,$token,$jurl,$durl,$turl,"
+					echo "$npn,$id,$ip,$token,$jurl,$durl,$turl,"
+				done
+		else
+			$NOOP anyscale ray get-head-ip $npn
+			$NOOP anyscale ray exec-cmd "$npn" '~/anaconda3/bin/jupyter notebook list'
+		fi
+	done
 done
 
 

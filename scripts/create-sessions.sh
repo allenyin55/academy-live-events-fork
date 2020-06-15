@@ -1,17 +1,20 @@
 #!/usr/bin/env zsh
 
-# TODO: Rather than fire all of them at once, do 20 or so at a time.
-
-script_name=$0
-name_prefix="academy-user"
-M=1
-N=1
-tagline="Create N sessions"
-
+# Import this BEFORE defining values like "cmd_opts"
 dir=$(dirname $0)
 . $dir/utils.sh
 
+script_name=$0
+tagline="Create N sessions"
+cmd_opts=(session_name range)
+post_help_messages=
+
+# TODO: Rather than fire all of them at once, do 20 or so at a time.
+
 range=()
+name_prefix=$DEFAULT_NAME_PREFIX
+let M=$DEFAULT_M
+let N=$DEFAULT_N
 while [[ $# -gt 0 ]]
 do
 	case $1 in

@@ -1,34 +1,19 @@
 #!/usr/bin/env zsh
 
-script_name=$0
-name_prefix="academy-user"
-let M=1
-let N=1
-tagline="Do post processing on sessions, e.g., fix Juypter Lab"
-
+# Import this BEFORE defining values like "cmd_opts"
 dir=$(dirname $0)
 . $dir/utils.sh
 
-# Overrides the default help in utils.sh
-help() {
-	cat <<EOF
-$script_name: $tagline
-
-Usage: $script_name [-h|--help] [-n|--name name] [-p|--project name] [N | M N | M-N | M:N]
-Where:
-	-h | --help           Print this message and exit.
-	-n | --name name      The name prefix for the sessions. Default is "$name_prefix". The number will be appended to it.
-	-p | --project name   The name of your Anyscale project; will correspond to /usr/ubuntu/<project_name> directory.
-						  Defaults to the value for "cluster_name" in ray-project/cluster.yaml.
-	N | M N | M-N | M:N   Four ways to specify how many sessions to create or a range of numbers from N-M, inclusive.
-	                      With one value N, M defaults to 1. Default is $M-$N.
-WARNING: It currently isn't possible to run this in parallel reliably, so this script
-runs ONE AT A TIME, which is very slow.
-EOF
-}
+script_name=$0
+tagline="Do post processing on sessions, e.g., fix Juypter Lab"
+cmd_opts=(session_name project_name range)
+post_help_messages=slow_warning
 
 range=()
+name_prefix=$DEFAULT_NAME_PREFIX
 project_name=
+let M=$DEFAULT_M
+let N=$DEFAULT_N
 while [[ $# -gt 0 ]]
 do
 	case $1 in

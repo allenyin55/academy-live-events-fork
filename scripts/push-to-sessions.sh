@@ -1,15 +1,18 @@
 #!/usr/bin/env zsh
 
-script_name=$0
-name_prefix="academy-user"
-M=1
-N=1
-tagline="Push code updates to running sessions, e.g., notebook bug fixes"
-
+# Import this BEFORE defining values like "cmd_opts"
 dir=$(dirname $0)
 . $dir/utils.sh
 
+script_name=$0
+tagline="Push code updates to running sessions, e.g., notebook bug fixes"
+cmd_opts=(session_name range)
+post_help_messages=slow_warning
+
 range=()
+name_prefix=$DEFAULT_NAME_PREFIX
+let M=$DEFAULT_M
+let N=$DEFAULT_N
 while [[ $# -gt 0 ]]
 do
 	case $1 in

@@ -1,28 +1,23 @@
 #!/usr/bin/env zsh
 
-script_name=$0
-name_prefix="academy-user"
-let M=1
-let N=1
-tagline="Check that Juypter Lab is properly configured in sessions"
-
+# Import this BEFORE defining values like "cmd_opts"
 dir=$(dirname $0)
 . $dir/utils.sh
 
-help2() {
-	cat <<EOF
-WARNING: It currently isn't possible to run this in parallel reliably, so this script
-runs ONE AT A TIME, which is very slow.
-EOF
-}
+script_name=$0
+tagline="Check that Juypter Lab is properly configured in sessions"
+cmd_opts=(session_name range)
+post_help_messages=slow_warning
 
 range=()
+name_prefix=$DEFAULT_NAME_PREFIX
+let M=$DEFAULT_M
+let N=$DEFAULT_N
 while [[ $# -gt 0 ]]
 do
 	case $1 in
 		-h|--help)
 			help
-			help2
 			exit 0
 			;;
 		-n|--name)
