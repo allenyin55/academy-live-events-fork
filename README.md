@@ -159,7 +159,7 @@ If you see anything other than this, like a version number 0.5.X, something is s
 Since we don't give attendees platform accounts at this time, we instead give them URLs for Jupyter, the Ray Dashboard, and TensorBoard, plus the Jupyter token needed to access these pages. This is the only access they have. (It's weak; they can start a terminal in Jupyter and muck around that way...)
 
 ```shell
-scripts/get-sessions.sh > sessions.csv
+scripts/get-sessions.sh M N > sessions.csv
 ```
 
 This will write the data as CSV content, so it's best to redirect to a file as shown.
