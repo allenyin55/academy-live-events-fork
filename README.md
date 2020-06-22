@@ -49,6 +49,7 @@ cp -r ../academy-live-events/ray-project ray-project
 Edit to taste. In particular, consider the following:
 
 1. Delete `ray-project/project-id` if any.
+	* If you see a warning _This project has been registered by somebody else or has been deleted. Do you want to re-register it? [y/N]:_ when you run the the project create command below, it's because an old `project-id` file was found.
 2. Pick a project name for the date or tutorial topic, e.g., `academy-2020-05-27`:
     * Change `cluster_name` in `cluster.yaml` to this name.
     * Change `name` in `project.yaml` to this name.
