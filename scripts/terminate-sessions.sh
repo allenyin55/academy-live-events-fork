@@ -37,10 +37,11 @@ done
 mkdir -p log
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0
+compute_range ${range[@]} | while read M N M0 N0 MN0
 do
+	logfile=log/terminate-$MN0.log
 	echo "Stopping and terminating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:"
- 	echo "Writing output to file log/terminate-$M0-$N0.log"
+ 	echo "Writing output to file $logfile"
 
 	mkdir -p log
 	for n in {$M..$N}
@@ -49,5 +50,5 @@ do
 		npn=${name_prefix}-${n0}
 		echo "Session $n0, named $npn."
 		$NOOP anyscale stop --terminate "$npn"
-	done > log/terminate-$M0-$N0.log" 2>&1
+	done > $logfile 2>&1
 done

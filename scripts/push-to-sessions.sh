@@ -35,7 +35,7 @@ do
 done
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0
+compute_range ${range[@]} | while read M N M0 N0 MN0
 do
 	echo "Pushing code updates to sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N"
 

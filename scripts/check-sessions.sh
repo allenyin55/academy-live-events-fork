@@ -35,10 +35,11 @@ do
 done
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0
+compute_range ${range[@]} | while read M N M0 N0 MN0
 do
+	logfile=log/check-$MN0.log
 	echo "Checking Jupyter Lab in sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:"
- 	echo "Writing output to file log/check-$M0-$N0.log"
+ 	echo "Writing output to file $logfile"
 
 	mkdir -p log
 	for n in {$M..$N}
@@ -47,5 +48,5 @@ do
 		npn=${name_prefix}-${n0}
 		echo "Checking session $n0, named $npn ..."
 		$NOOP anyscale ray exec-cmd "$npn" "/home/ubuntu/anaconda3/bin/jupyter labextension list"
-	done > log/check-$M0-$N0.log" 2>&1
+	done > $logfile 2>&1
 done

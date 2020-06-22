@@ -109,8 +109,9 @@ split_range() {
     echo $M $N
 }
 
-# From the passed in arguments, compute the range and also
-# the zero-padded min and max values.
+# From the passed in arguments, compute the range, the zero-padded
+# min and max values, and a string for the range that is "00M-00N"
+# unless the min and max are equal, in which case "00M" is returned.
 compute_range() {
     M=1
     N=1
@@ -125,7 +126,10 @@ compute_range() {
 
     M0=$(zero_pad $M)
     N0=$(zero_pad $N)
-    echo $M $N $M0 $N0
+    MN0="$M0-$N0"
+    [[ $M0 = $N0 ]] && MN0=$M0
+
+    echo $M $N $M0 $N0 $MN0
 }
 
 get_project_name() {

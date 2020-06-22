@@ -45,10 +45,11 @@ done
 mkdir -p log
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0
+compute_range ${range[@]} | while read M N M0 N0 MN0
 do
+	logfile=log/fix-$MN0.log
 	echo "Fixing sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N in project $project_name:"
- 	echo "Writing output to file log/fix-$M0-$N0.log"
+ 	echo "Writing output to file $logfile"
 
 	mkdir -p log
 	for n in {$M..$N}
@@ -58,5 +59,5 @@ do
 		echo "Fixing session $n0, named $npn ..."
 		$NOOP anyscale ray exec-cmd "$npn" \
 			"/home/ubuntu/$project_name/tools/fix-jupyter.sh -j /home/ubuntu/anaconda3/bin/jupyter"
-	done > log/fix-$M0-$N0.log" 2>&1
+	done > $logfile 2>&1
 done

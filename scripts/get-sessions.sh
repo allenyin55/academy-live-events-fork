@@ -52,7 +52,7 @@ done
 echo "SESSION,ID,DASHBOARD_IP,JUPYTER_TOKEN,JUPYTER_URL,DASHBOARD_URL,TENSORBOARD_URL,ASSIGNED_EMAIL"
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0
+compute_range ${range[@]} | while read M N M0 N0 MN0
 do
 	echo "Getting session data for sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:" >&2
 
