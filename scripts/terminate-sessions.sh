@@ -34,6 +34,8 @@ do
 	shift
 done
 
+mkdir -p log
+
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
 compute_range ${range[@]} | while read M N M0 N0
 do

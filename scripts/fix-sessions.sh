@@ -42,6 +42,8 @@ done
 [[ -z $project_name ]] && project_name=$(get_project_name)
 [[ -z $project_name ]] && error "Failed to get the project name from $DEFAULT_CLUSTER_YAML. Fix that file or specify the project name here."
 
+mkdir -p log
+
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
 compute_range ${range[@]} | while read M N M0 N0
 do
