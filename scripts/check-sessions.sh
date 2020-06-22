@@ -38,21 +38,14 @@ done
 compute_range ${range[@]} | while read M N M0 N0
 do
 	echo "Checking Jupyter Lab in sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:"
+ 	echo "Writing output to file log/check-$M0-$N0.log"
 
 	mkdir -p log
 	for n in {$M..$N}
 	do
 		n0=$(zero_pad $n)
 		npn=${name_prefix}-${n0}
-		echo "Checking session $n0, named $npn. Writing output to file log/check-$npn.log"
-		if [[ -z $NOOP ]]
-		then
-			anyscale ray exec-cmd "$npn" \
-				"/home/ubuntu/anaconda3/bin/jupyter labextension list" \
-				> log/check-$npn.log 2>&1
-		else
-			$NOOP anyscale ray exec-cmd "$npn" \
-				"/home/ubuntu/anaconda3/bin/jupyter labextension list"
-		fi
-	done
+		echo "Checking session $n0, named $npn ..."
+		$NOOP anyscale ray exec-cmd "$npn" "/home/ubuntu/anaconda3/bin/jupyter labextension list"
+	done > log/check-$M0-$N0.log" 2>&1
 done

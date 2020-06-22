@@ -40,18 +40,14 @@ mkdir -p log
 compute_range ${range[@]} | while read M N M0 N0
 do
 	echo "Stopping and terminating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:"
+ 	echo "Writing output to file log/terminate-$M0-$N0.log"
 
 	mkdir -p log
 	for n in {$M..$N}
 	do
 		n0=$(zero_pad $n)
 		npn=${name_prefix}-${n0}
-		echo "Session $n0, named $npn. Writing output to file log/terminate-$npn.log"
-		if [[ -z $NOOP ]]
-		then
-			anyscale stop --terminate "$npn" > log/terminate-$npn.log 2>&1
-		else
-			$NOOP anyscale stop --terminate "$npn"
-		fi
-	done
+		echo "Session $n0, named $npn."
+		$NOOP anyscale stop --terminate "$npn"
+	done > log/terminate-$M0-$N0.log" 2>&1
 done

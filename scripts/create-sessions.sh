@@ -41,13 +41,14 @@ mkdir -p log
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
 compute_range ${range[@]} | while read M N M0 N0
 do
-	echo "Creating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N. Writing logs to log directory."
+	echo "Creating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N."
+ 	echo "Writing output to file log/create-$M0-$N0.log"
 
 	for n in {$M..$N}
 	do
 		n0=$(zero_pad $n)
 		npn=${name_prefix}-${n0}
-		echo "Creating session $n0, named $npn..."
-		$NOOP anyscale start --session-name $npn > log/create-$npn.log 2>&1
-	done
+		echo "Creating session $n0, named $npn ..."
+		$NOOP anyscale start --session-name $npn
+	done > log/create-$M0-$N0.log" 2>&1
 done
