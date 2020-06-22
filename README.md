@@ -129,6 +129,8 @@ TODO: I once tried initializing with a session snapshot, but it didn't seem to i
 
 ## Fix the Sessions
 
+>> **NOTE:** This step may no longer be necessary! `ssh` into a session and run `juypter labextension list`. If it shows `@pyviz/jupyterlab_pyviz v1.0.4  enabled  OK`, you're good to go!
+
 At this time, some additional steps have to be done separately. That's what `scripts/fix-sessions.sh` is for.
 
 ```shell
