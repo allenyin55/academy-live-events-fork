@@ -46,6 +46,6 @@ do
 		n0=$(zero_pad $n)
 		npn=${name_prefix}-${n0}
 		echo "Creating session $n0, named $npn..."
-		$NOOP anyscale start --session-name $npn > log/create-$npn.log 2>&1 &
+		$NOOP anyscale start --session-name $npn > log/create-$npn.log 2>&1
 	done
 done

@@ -127,11 +127,11 @@ It appears this command will creat a snapshot of your project _for every single 
 
 TODO: I once tried initializing with a session snapshot, but it didn't seem to improve the time, although if the snapshot contains the changes for some or all of the subsequent setup steps, that would be worth it. If so, `create-sessions.sh` will need to be modified to include an argument for a snapshot id.
 
-## Fix the Sessions
+## Fix the Sessions (If Necessary...)
 
->> **NOTE:** This step may no longer be necessary! `ssh` into a session and run `juypter labextension list`. If it shows `@pyviz/jupyterlab_pyviz v1.0.4  enabled  OK`, you're good to go!
+Previously, it was necessary to perform this step, to do final changes to the session that could not be done by the `cluster.yaml` `setup_commands`. However, these issues are now resolved. This section is still here, in case a subsequent problem emerges. Note the next section _Check the Sessions_ should still be used to ensure the sessions are properly configured.
 
-At this time, some additional steps have to be done separately. That's what `scripts/fix-sessions.sh` is for.
+If the session checking shows problems, then run the following command:
 
 ```shell
 scripts/fix-sessions.sh --name academy-user --project academy-2020-05-27 M N
@@ -141,7 +141,7 @@ Where again the `--name academy-user` is optional and the default value is shown
 
 This script uses `anyscale ray exec-cmd` to run an Academy repo script `/usr/ubuntu/<project_name>/tools/fix-jupyter.sh` that will be on the head node by this point.
 
-> **WARNING:** This script runs synchronously through each session, one at a time, because of problems with the Anyscale gateway getting overwhelmed when too many requests are made.
+> **WARNING:** This script runs synchronously through each session, one at a time, to avoid stressing the Anyscale gateway.
 
 ## Check the Sessions
 
@@ -154,7 +154,7 @@ If successful, you'll see output like extension `@pyviz/jupyterlab_pyviz` is ins
 
 If you see anything other than this, like a version number 0.5.X, something is still wrong.
 
-> **WARNING:** This script runs synchronously through each session, one at a time, because of problems with the Anyscale gateway getting overwhelmed when too many requests are made.
+> **WARNING:** This script runs synchronously through each session, one at a time, to avoid stressing the Anyscale gateway.
 
 ## Retrieve Session Information
 
