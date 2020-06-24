@@ -61,3 +61,5 @@ do
 			"/home/ubuntu/$project_name/tools/fix-jupyter.sh -j /home/ubuntu/anaconda3/bin/jupyter"
 	done > $logfile 2>&1
 done
+info "Finished!"
+

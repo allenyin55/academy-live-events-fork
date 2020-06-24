@@ -47,3 +47,4 @@ do
 		$NOOP anyscale push ${npn}
 	done
 done
+info "Finished!"

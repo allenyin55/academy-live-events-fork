@@ -23,6 +23,12 @@ project_name_help() {
 EOF
 }
 
+snapshot_help() {
+    cat <<EOF
+    -s | --snapshot id.   The snapshot to use. By default a snapshot of the current project directory is created.
+EOF
+}
+
 range_help() {
     cat <<EOF
     N | M N | M-N | M:N   Four ways to specify how many sessions to create or a range of numbers from N-M, inclusive.
@@ -73,9 +79,17 @@ EOF
 }
 
 error() {
-    echo "ERROR: $@" >&2
+    echo "ERROR:   $@" >&2
     help >&2
     exit 1
+}
+
+warning() {
+    echo "WARNING: $@" >&2
+}
+
+info() {
+    echo "INFO:    $@" >&2
 }
 
 # usage zero_pad N [number_digits]

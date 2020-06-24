@@ -27,11 +27,22 @@ do
 	shift
 done
 
-echo "Read session data from stdin (exit with ^D or end of file):" >&2
-sed -e 's/,/ /g' | while read session id ip token jurl durl tburl email_ignore
+cat <<EOF 1>&2
+$0: The output will start with a line for an email address (if known) and a line for the email subject line,
+$0: followed by the body of the email, which ends with a line containing "=====...=====".
+$0:
+$0: Reading session data from stdin (exit with ^D or end of file):
+EOF
+
+sed -e 's/,/ /g' | while read session id ip token jurl durl tburl email
 do
 	[[ $session = "SESSION" ]] && continue
 	cat << EOF
+
+$email
+
+About the RLlib Tutorial, June 24
+
 
 Greetings!
 
@@ -41,6 +52,7 @@ If you decide you can't make it, please update your registration using the URL E
 
 https://www.eventbrite.com/e/anyscale-academy-reinforcement-learning-with-ray-rllib-tickets-105573573400
 
+
 Here is the name of your online "session" and the URLs you will use during class
 
 Your "session" name: $session
@@ -48,23 +60,24 @@ Jupyter Lab:         $jurl
 Ray Dashboard:       $durl
 TensorBoard:         $tburl
 
-You'll mostly use the Jupyter Lab environment for the tutorials. The Ray Dashboard is used to observe performance characteristics. TensorBoard is used in several tutorials to examine the results of model training, etc.
+You will mostly use the Jupyter Lab environment for the tutorials. The Ray Dashboard is used to observe performance characteristics. TensorBoard is used in several tutorials to examine the results of model training, etc. TensorBoard is used to examine ML model parameters and training information.
 
 Click this zoom link to join the live tutorial:
 
-https://zoom.us/j/97296067959?pwd=b01yelp5U1lUZC81cG5jR0JFOGdtZz09
+https://zoom.us/j/92969464830
 
-You can also find all the tutorial notebooks and code here:
+
+You can also find all the tutorial notebooks, other source code, and instructions here:
 
 https://github.com/anyscale/academy
 
-Either clone the repo or download the latest release (in the Releases tab).
+Either clone the repo or download the latest release.
 
 NOTES:
 
 1. To save any edits you make to a notebook, download it using the File > Download menu item in Jupyter.
-2. If you run into problems, paste the session name above into the Zoom Q&A window and describe the issue.
-3. Need help before or after the event? Send email to academy@anyscale.com or ask for help in the #tutorials channel in the Ray slack.
+2. If you run into problems during the event, paste the session name above into the Zoom Q&A window and describe the issue.
+3. If you need help before or after the event. send email to academy@anyscale.com or ask for help in the #tutorials channel in the Ray slack.
 
 Don't forget to visit our Events page, https://anyscale.com/events for future tutorial and other online events this Summer and Fall. Videos of past events can be found there, too.
 
@@ -72,6 +85,8 @@ Don't forget to visit our Events page, https://anyscale.com/events for future tu
 See you soon!
 
 The Anyscale Academy Team
+
+===============================================================================
 
 EOF
 done

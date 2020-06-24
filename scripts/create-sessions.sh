@@ -6,13 +6,14 @@ dir=$(dirname $0)
 
 script_name=$0
 tagline="Create N sessions"
-cmd_opts=(session_name range)
+cmd_opts=(session_name snapshot range)
 post_help_messages=
 
 # TODO: Rather than fire all of them at once, do 20 or so at a time.
 
 range=()
 name_prefix=$DEFAULT_NAME_PREFIX
+snapshot=
 let M=$DEFAULT_M
 let N=$DEFAULT_N
 while [[ $# -gt 0 ]]
@@ -26,6 +27,10 @@ do
 			shift
 			name_prefix=$1
 			;;
+		-s|--snapshot)
+			shift
+			snapshot=$1
+			;;
 		-*)
 			error "Unexpected argument $1"
 			;;
@@ -35,6 +40,8 @@ do
 	esac
 	shift
 done
+declare -a snapshot_opt
+[[ -n $snapshot ]] && snapshot_opt=("--snapshot" "$snapshot")
 
 mkdir -p log
 
@@ -50,6 +57,7 @@ do
 		n0=$(zero_pad $n)
 		npn=${name_prefix}-${n0}
 		echo "Creating session $n0, named $npn ..."
-		$NOOP anyscale start --session-name $npn
+		$NOOP anyscale start --session-name $npn ${snapshot_opt[@]}
 	done > $logfile 2>&1
 done
+info "Finished!"

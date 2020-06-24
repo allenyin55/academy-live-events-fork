@@ -50,3 +50,4 @@ do
 		$NOOP anyscale ray exec-cmd "$npn" "/home/ubuntu/anaconda3/bin/jupyter labextension list"
 	done > $logfile 2>&1
 done
+info "Finished!"

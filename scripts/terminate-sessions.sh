@@ -52,3 +52,4 @@ do
 		$NOOP anyscale stop --terminate "$npn"
 	done > $logfile 2>&1
 done
+info "Finished!"

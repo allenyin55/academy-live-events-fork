@@ -78,5 +78,6 @@ do
 		fi
 	done
 done
+info "Finished!"
 
 
