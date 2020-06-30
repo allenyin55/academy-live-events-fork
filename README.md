@@ -41,12 +41,15 @@ tools/cleanup.sh | while read x; do rm -rf $x; done
 
 From the `academy-live-events` repo (i.e., where _this_ README lives), copy the `ray-project` folder here to the work (current) directory. I actually try to keep them in sync, but consider the `academy-live-events` to be _canonical_.
 
+The following commands assume that the `academy-live-events` directory is a _sibling_ to your work directory. Edit to taste...
+
+
 ```shell
 rm -rf ray-project
 cp -r ../academy-live-events/ray-project ray-project
 ```
 
-Edit to taste. In particular, consider the following:
+Edit the contents of `ray-project` to taste. In particular, consider the following:
 
 1. Delete `ray-project/project-id` if any.
 	* If you see a warning _This project has been registered by somebody else or has been deleted. Do you want to re-register it? [y/N]:_ when you run the the project create command below, it's because an old `project-id` file was found.
@@ -59,7 +62,7 @@ Edit to taste. In particular, consider the following:
 
 ### Copy the scripts Folder
 
-Recall what I said above about cleaning the directory. We don't really want the `scripts` to be pushed up to the head node, although it's mostly harmless. However, we need it in the work directory, so just copy the `academy-live-events/scripts` directory to the project work directory.
+We don't really want the `scripts` to be pushed up to the head node, although it's mostly harmless. However, we need it in the work directory, so just copy the `academy-live-events/scripts` directory to the project work directory.
 
 ```shell
 cp -r ../academy-live-events/scripts scripts
@@ -67,7 +70,7 @@ cp -r ../academy-live-events/scripts scripts
 
 ### Update the Anyscale Command
 
-You **must** use the latest command, not necessarily because of any features it offers, but because it will warn you **incessantly** that you need to update and those messages will mess up parsing the command output in the scripts used below.
+You **must** use the latest command, not necessarily because of any features it offers, but because it will warn you _incessantly_ that you need to update and those messages will mess up parsing the command output in the scripts used below.
 
 ```shell
 pip install -U anyscale
@@ -107,7 +110,7 @@ scripts/create-sessions.sh --name academy-user M N
 
 Where `--name academy-user` is actually the default value for a prefix used for every session name. (Note: this name is different from _project_ name used in the `anyscale init` command above). Hence, you can omit this option unless you want to use a different name. I'm showing it here and in subsequent commands for completeness.
 
-The `M` is the minimum session number, defaulting to 1, and `N` is the maximum session number, also defaulting to 1. Both numbers are _inclusive_. If you only specify one of them, it is interpreted as the _maximum_ number with the minimum defaulting to 1. This script runs the following command N-M+1 times:
+The `M` is the minimum session number, defaulting to 1, and `N` is the maximum session number, also defaulting to 1. Both numbers are _inclusive_. If you only specify one of them, it is interpreted as the _maximum_ number with the minimum defaulting to 1. This script runs the following `anyscale` command N-M+1 times:
 
 ```shell
 anyscale start --session-name academy-user-NNN
@@ -117,28 +120,30 @@ Where the default session name prefix `academy-user` is shown and `NNN` is a zer
 
 > **Note:** A lower-bound argument is supported so you can run this command as many times as necessary, starting where you "left off" from the last run.
 
-It appears this command will creat a snapshot of your project _for every single session_ created, so expect to wait awhile.
+By default, this command will creat a snapshot of your project _for every single session_ created, so expect to wait awhile. It's better to create one session, note the snapshot id, then run the script again, passing that value with the `--snapshot id` argument and the range `2 N`.
 
 > **Tips:**
 >
 > 1. All the `scripts` have `--help` options.
 > 2. The `ray-project/cluster.yaml` file has several post-install commands it runs.
-> 3. It takes a _very long time_ for each session to initialize, about 8-10 minutes.
+> 3. It takes a _very long time_ for each session to initialize, about 8-10 minutes or sometimes longer.
 > 4. Click the `logs` link for a session to see how it's doing.
 
-TODO: I once tried initializing with a session snapshot, but it didn't seem to improve the time, although if the snapshot contains the changes for some or all of the subsequent setup steps, that would be worth it. If so, `create-sessions.sh` will need to be modified to include an argument for a snapshot id.
+TODO: Modify `create-sessions.sh` to capture the first snapshot already and pass it as an argument while creating the rest of the sessions.
 
-## Fix the Sessions (If Necessary...)
+## Fix the Sessions (Obsolete...)
 
 Previously, it was necessary to perform this step, to do final changes to the session that could not be done by the `cluster.yaml` `setup_commands`. However, these issues are now resolved. This section is still here, in case a subsequent problem emerges. Note the next section _Check the Sessions_ should still be used to ensure the sessions are properly configured.
 
 If the session checking shows problems, then run the following command:
 
 ```shell
-scripts/fix-sessions.sh --name academy-user --project academy-2020-05-27 M N
+scripts/fix-sessions.sh --name academy-user M N
 ```
 
-Where again the `--name academy-user` is optional and the default value is shown. The `--project` argument is also optional. By default, it uses the name for the project in `ray-project/cluster.yaml`. It must be the same name used above when creating the project. It's needed here for the `/usr/ubuntu/<project_name>` directory in the head node.
+Where again the `--name academy-user` is optional and the default value is shown.
+
+> **Note:** There is also an optional `--project name` argument. By default, it uses the name for the project in `ray-project/cluster.yaml`. It must be the same name used above when creating the project. It's needed here for the `/usr/ubuntu/<project_name>` directory in the head node.
 
 This script uses `anyscale ray exec-cmd` to run an Academy repo script `/usr/ubuntu/<project_name>/tools/fix-jupyter.sh` that will be on the head node by this point.
 
@@ -146,14 +151,17 @@ This script uses `anyscale ray exec-cmd` to run an Academy repo script `/usr/ubu
 
 ## Check the Sessions
 
-A sanity check to make sure the Jupyter Lab extensions are properly installed and up to date. This script is very similar to `fix-sessions.sh` in structure and arguments:
+A sanity check to make sure the Jupyter Lab extensions are properly installed and up to date. This script is very similar to `fix-sessions.sh` in structure and arguments. You should run this script even though `fix-sessions.sh` is no longer necessary:
 
 ```shell
 scripts/check-sessions.sh M N
 ```
+
 If successful, you'll see output like extension `@pyviz/jupyterlab_pyviz` is installed and activated (`OK` in green color) and the version will be 1.0.X.
 
 If you see anything other than this, like a version number 0.5.X, something is still wrong.
+
+> **Tip:** Since it appears that the session creation usually works, I now just run this script for a few, randomly-sampled sessions.
 
 > **WARNING:** This script runs synchronously through each session, one at a time, to avoid stressing the Anyscale gateway.
 
@@ -189,7 +197,9 @@ Then run the following script, assuming you saved the output of the previous com
 scripts/write-session-data.sh < sessions.csv > emails.txt
 ```
 
-All the email texts will be written to one file, `emails.txt`.
+All the email texts will be written to one file, `emails.txt`. Each email will start with an email address on a line, a suggested subject for the email on a line, and then the body of the text with the unique data for that person.
+
+> **Note:** This script doesn't access the sessions.
 
 ## Email Attendees
 
@@ -203,13 +213,13 @@ If you do any bug fixes to the Academy code, such as the notebooks, push the cha
 
 ## The Day of the Event
 
-1. Set up a custom slack channel in the Anyscale slack for that day's event. This will be used for internal communications and coordination, like troubleshooting.
+1. Set up a custom slack channel in the Anyscale slack for that day's event, to be used for internal communications and coordination, like troubleshooting.
 2. For your Anyscale colleagues who will help during the event:
     * Make them _project collaborators_ for the event's project.
     * Tell them about the special slack channel.
     * Add them as Zoom _panelists_, e.g., to help with Q&A.
     * Share with them a Google spreadsheet with the list of the extra session URLs, which they can hand out to people who need them during the event.
-    * Tell them, when a session has been allocated, mark it in the spreadsheet!!
+    * Tell them that when a session has been allocated, they should mark it in the spreadsheet!!
 
 ## After the Event
 
