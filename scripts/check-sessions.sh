@@ -47,7 +47,7 @@ do
 		n0=$(zero_pad $n)
 		npn=${name_prefix}-${n0}
 		echo "Checking session $n0, named $npn ..."
-		$NOOP anyscale ray exec-cmd "$npn" "/home/ubuntu/anaconda3/bin/jupyter labextension list"
+		$NOOP anyscale exec -n "$npn" "/home/ubuntu/anaconda3/bin/jupyter labextension list"
 	done > $logfile 2>&1
 done
 info "Finished!"

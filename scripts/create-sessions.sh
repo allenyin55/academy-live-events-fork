@@ -6,7 +6,7 @@ dir=$(dirname $0)
 
 script_name=$0
 tagline="Create N sessions"
-cmd_opts=(session_name snapshot range)
+cmd_opts=(session_name snapshot_id range)
 post_help_messages=
 
 # TODO: Rather than fire all of them at once, do 20 or so at a time.

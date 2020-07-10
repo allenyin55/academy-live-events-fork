@@ -85,10 +85,10 @@ You may want to use a special account separate from your personal one, although 
 Use the same name you used in the `cluster.yaml` and `project.yaml` files above:
 
 ```shell
-anyscale init --name academy-2020-05-27 --requirements ray-project/requirements.txt
+anyscale init --requirements ray-project/requirements.txt
 ```
 
-(TODO: I don't know if either argument is required since this information is in the `ray-project` files.)
+(TODO: It appears that the `--requirements` argument is required, even though the file is in `ray-project`. Is this correct?)
 
 This takes a while, as it makes a snapshot of up your local project directory!
 

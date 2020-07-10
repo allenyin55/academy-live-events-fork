@@ -8,6 +8,7 @@ let DEFAULT_N=1
 # Construct help in pieces:
 session_name_opt='[-n | --name name]'
 project_name_opt='[-p | --project name]'
+snapshot_id_opt='[-s | --snapshot id]'
 range_opt='[N | M N | M-N | M:N]'
 
 session_name_help() {
@@ -23,7 +24,7 @@ project_name_help() {
 EOF
 }
 
-snapshot_help() {
+snapshot_id_help() {
     cat <<EOF
     -s | --snapshot id.   The snapshot to use. By default a snapshot of the current project directory is created.
 EOF

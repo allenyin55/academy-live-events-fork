@@ -57,7 +57,7 @@ do
 		n0=$(zero_pad $n)
 		npn=${name_prefix}-${n0}
 		echo "Fixing session $n0, named $npn ..."
-		$NOOP anyscale ray exec-cmd "$npn" \
+		$NOOP anyscale exec -n "$npn" \
 			"/home/ubuntu/$project_name/tools/fix-jupyter.sh -j /home/ubuntu/anaconda3/bin/jupyter"
 	done > $logfile 2>&1
 done

@@ -61,7 +61,7 @@ do
 			if [[ -z $NOOP ]]
 			then
 				ip=$(anyscale ray get-head-ip $npn 2> /dev/null)
-				anyscale ray exec-cmd "$npn" '~/anaconda3/bin/jupyter notebook list' | \
+				anyscale exec -n "$npn" '~/anaconda3/bin/jupyter notebook list' | \
 					grep '^http' | sed -e 's?.*sessions/\([0-9]*\)/.*token=\([^ ]*\).*?\1 \2?' | \
 					while read id token
 					do
@@ -73,7 +73,7 @@ do
 					done
 			else
 				$NOOP anyscale ray get-head-ip $npn
-				$NOOP anyscale ray exec-cmd "$npn" '~/anaconda3/bin/jupyter notebook list'
+				$NOOP anyscale exec -n "$npn" '~/anaconda3/bin/jupyter notebook list'
 			fi
 		fi
 	done
