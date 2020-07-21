@@ -54,7 +54,7 @@ Edit the contents of `ray-project` to taste. In particular, consider the followi
 1. Delete `ray-project/project-id` if any.
 	* If you see a warning _This project has been registered by somebody else or has been deleted. Do you want to re-register it? [y/N]:_ when you run the the project create command below, it's because an old `project-id` file was found.
 2. Pick a project name for the date or tutorial topic, e.g., `academy-2020-05-27`:
-    * Change `cluster_name` in `cluster.yaml` to this name.
+    * Change `cluster_name` in `cluster.yaml` to this name. **WARNING:** The current value is `anyscale-academy`, which is used in paths inside the `setup_commands`. You **must** find and change all occurrences consistently.
     * Change `name` in `project.yaml` to this name.
 3. Adjust the instance type used, as necessary.
 4. Change `max_workers` in `cluster.yaml` to be > 1, as necessary.
@@ -88,9 +88,14 @@ Use the same name you used in the `cluster.yaml` and `project.yaml` files above:
 anyscale init --requirements ray-project/requirements.txt
 ```
 
-(TODO: It appears that the `--requirements` argument is required, even though the file is in `ray-project`. Is this correct?)
+TODOs:
+
+1. It appears that the `--requirements` argument is required, even though the file is in `ray-project`. Is this correct?
+2. I'm now brute-force installing the conda environment I want; should I just skip my `requirements.txt` file?
 
 This takes a while, as it makes a snapshot of up your local project directory!
+
+> **TIP:** Note the UUID printed for the snapshot. This UUID is also shown in the https://anyscale.dev UI for your project.
 
 When finished, open and navigate to your project. You'll probably find this useful to keep open:
 
@@ -105,15 +110,17 @@ At this time, we statically create a session for each registered attendee and ma
 Note that each session takes approximately 15-30 minutes to complete all the setup steps. As much as possible, we do things in parallel. For example, many of the scripts run commands in the background.
 
 ```shell
-scripts/create-sessions.sh --name academy-user M N
+scripts/create-sessions.sh --snapshot id --name academy-user M N
 ```
 
-Where `--name academy-user` is actually the default value for a prefix used for every session name. (Note: this name is different from _project_ name used in the `anyscale init` command above). Hence, you can omit this option unless you want to use a different name. I'm showing it here and in subsequent commands for completeness.
+The `--snapshot id` is optional, but it **significantly improves** the startup time, as it eliminates the creation of a snapshot of your local directory for **every, single session created.** Use the `id` printed when you created the project in the previous step.
+
+The `--name academy-user` is optional. The value `academy-user` is actually the default value for a prefix used for every session name. (Note: this name is different from _project_ name used in the `anyscale init` command above). Hence, you can omit this option unless you want to use a different name. I'm showing it here and in subsequent commands for completeness. Each session will be given a name like `academy-user-001`.
 
 The `M` is the minimum session number, defaulting to 1, and `N` is the maximum session number, also defaulting to 1. Both numbers are _inclusive_. If you only specify one of them, it is interpreted as the _maximum_ number with the minimum defaulting to 1. This script runs the following `anyscale` command N-M+1 times:
 
 ```shell
-anyscale start --session-name academy-user-NNN
+anyscale start --snapshot id --session-name academy-user-NNN
 ```
 
 Where the default session name prefix `academy-user` is shown and `NNN` is a zero-padded number that makes the session name unique.
