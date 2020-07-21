@@ -26,7 +26,9 @@ EOF
 
 snapshot_id_help() {
     cat <<EOF
-    -s | --snapshot id.   The snapshot to use. By default a snapshot of the current project directory is created.
+    -s | --snapshot id    The snapshot to use. By default a snapshot of the current project directory is created.
+                          Use of this option is recommended. Use the snapshot created when you create the project.
+                          Its UUID is printed to the console.
 EOF
 }
 
