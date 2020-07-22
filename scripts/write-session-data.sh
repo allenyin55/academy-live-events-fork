@@ -41,31 +41,27 @@ do
 
 $email
 
-About the RLlib Tutorial, June 24
+About the Anyscale Academy Tutorial, July 22nd
 
 
 Greetings!
 
-Thank you for registering for the live Anyscale Academy "Reinforcement Learning with Ray RLlib", June 24, 2020, 10AM Pacific.
+Thank you for registering for the live Anyscale Academy tutorial, July 22, 2020, 10AM Pacific.
 
-If you decide you can't make it, please update your registration using the URL Eventbrite emailed you. Or, try this URL:
+If you decide you can't make it, please update your registration using the URL Eventbrite emailed you.
 
-https://www.eventbrite.com/e/anyscale-academy-reinforcement-learning-with-ray-rllib-tickets-105573573400
-
-
-Here is the name of your online "session" and the URLs you will use during class
+Here is the name of your online "session" and the URLs you will use during the class.
 
 Your "session" name: $session
 Jupyter Lab:         $jurl
 Ray Dashboard:       $durl
 TensorBoard:         $tburl
 
-You will mostly use the Jupyter Lab environment for the tutorials. The Ray Dashboard is used to observe performance characteristics. TensorBoard is used in several tutorials to examine the results of model training, etc. TensorBoard is used to examine ML model parameters and training information.
+You will mostly use the Jupyter Lab environment for the tutorials. The Ray Dashboard is used to observe performance characteristics. TensorBoard is used in several tutorials to examine the results of model training, etc.
 
-Click this zoom link to join the live tutorial:
+Click this zoom link to join the live tutorial from 10AM until Noon:
 
-https://zoom.us/j/92969464830
-
+https://zoom.us/j/94549259574
 
 You can also find all the tutorial notebooks, other source code, and instructions here:
 
@@ -77,10 +73,13 @@ NOTES:
 
 1. To save any edits you make to a notebook, download it using the File > Download menu item in Jupyter.
 2. If you run into problems during the event, paste the session name above into the Zoom Q&A window and describe the issue.
-3. If you need help before or after the event. send email to academy@anyscale.com or ask for help in the #tutorials channel in the Ray slack.
+3. If you need help before or after the event. send email to academy@anyscale.com or ask for help using the Q&A feature in Zoom.
 
 Don't forget to visit our Events page, https://anyscale.com/events for future tutorial and other online events this Summer and Fall. Videos of past events can be found there, too.
 
+Sign up for Ray Summit Virtual, 9/30-10/1 today! It's free!
+
+http://raysummit.org
 
 See you soon!
 
