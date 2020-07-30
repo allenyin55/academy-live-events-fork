@@ -1,17 +1,27 @@
 #!/usr/bin/env zsh
 
-# Edit the following definitions as required:
-
-LATEST_ACADEMY=v151
-
 dir=$(dirname $0)
 . $dir/scripts/utils.sh
 
+# The lines up to $@ parsing block setup the help.
 script_name=$0
 tagline="A script to drive the Academy setup process, e.g., for testing"
-cmd_opts=(session_name project_name range)
-post_help_messages=slow_warning
+version_opt='version'
+version_help() {
+    cat <<EOF
+    version               The version tag of the academy and academy-live-events to use (required).
+EOF
+}
+cmd_opts=(version help session_name project_name range)
+read -r -d '' post_help_messages <<- EOM
+	This file is meant to be copied separately to another work directory and run there.
+	It clones the academy and academy-live-events repos into that directory.
 
+	$(slow_warning)
+EOM
+
+set -e
+version=
 range=()
 name_prefix=$DEFAULT_NAME_PREFIX
 project_name=
@@ -33,31 +43,34 @@ do
 			project_name=$1
 			;;
 		-*)
-			error "Unexpected argument $1"
+			error "Unexpected argument $1."
 			;;
 		*)
-			range+=($1)
+			# first non-flag is the version
+			[[ -z $version ]] && version=$1 || range+=($1)
 			;;
 	esac
 	shift
 done
+[[ -z $version ]] && error "The version argument is required."
 
-echo "Download the academy and academy-live-events (latest releases):"
+info "Download the academy and academy-live-events using version tag: $version"
 for ext in "" "-live-events"
 do
-	zip=academy$ext-$LATEST_ACADEMY.zip
-	$NOOP curl -o $zip https://codeload.github.com/anyscale/academy$ext/zip/$LATEST_ACADEMY
+	zip=academy$ext-$version.zip
+	$NOOP curl -o $zip https://codeload.github.com/anyscale/academy$ext/zip/$version
 	$NOOP unzip $zip
 done
 
-echo "Copy the live event's version of ray-project over the academy's:"
+info "Copy the live event's version of ray-project over the academy's copy."
 $NOOP cp -rf academy-live-events/ray-project academy/ray-project
 
-echo "Copy the live event's scripts directory to the academy:"
+info "Copy the live event's scripts directory to the academy."
 $NOOP cp -rf academy-live-events/scripts academy/
 
-echo "Switch to the academy directory:"
+info "Switch to the academy directory."
 $NOOP cd academy
+info "Working directory: $PWD"
 
 if [[ -n $project_name ]]
 then
@@ -67,42 +80,40 @@ else
 fi
 
 
-$NOOP which -s anyscale || error "Please 'pip install anyscale'."
+$NOOP which -s anyscale || error "Please 'pip install anyscale'"
 
-echo "Create the project $project_name:"
+info "Create the project $project_name."
 $NOOP anyscale init --requirements ray-project/requirements.txt
 
-echo -n "Enter the snapshot id just created (or leave blank): "
+info -n "PROMPT ==> Enter the snapshot id just created (or leave blank to create a new one) ==> "
 read id
 snapshot_args=()
 [[ -n $id ]] && snapshot_args=("--snapshot" $id)
 
-echo "Creating sessions:"
-$NOOP scripts/create-sessions.sh ${snapshot_args[@]} --name $name_prefix ${range[@]}
+info "Creating sessions."
+scripts/create-sessions.sh ${snapshot_args[@]} --name $name_prefix ${range[@]}
 
-echo "Click the link for your anyscale.dev project page output above."
-echo -n "Watch the sessions start. When they are ready, hit enter to continue: "
+info "Click the link for your anyscale.dev project page output above."
+info -n "PROMPT ==> Watch the sessions start. When they are ready, hit enter to continue ==> "
 read toss
 
-echo "Sanity checks of first and last session:"
-compute_range ${range[@]} | while read M N M0 N0 MN0
-do
-	echo "Check session - ${name_prefix}-$M0:"
-	$NOOP scripts/check-sessions.sh --name $name_prefix $M $M
-	echo "Content of log/check-$M0.log:"
-	$NOOP cat log/check-$M0.log
-	echo "Check session - ${name_prefix}-$N0:"
-	$NOOP scripts/check-sessions.sh --name $name_prefix $N $N
-	echo "Content of log/check-$N0.log:"
-	$NOOP cat log/check-$N0.log
-done
+compute_range ${range[@]} | read M N M0 N0 MN0
+[[ $M != $N ]] && fandl=" first and last"
+info "Sanity check of$fandl session."
+info "Check session - ${name_prefix}-$M0."
+scripts/check-sessions.sh --name $name_prefix $M $M
+if [[ $M != $N ]]
+then
+	info "Check session - ${name_prefix}-$N0."
+	scripts/check-sessions.sh --name $name_prefix $N $N
+fi
 
-echo "Get the sessions. The data is written to sessions.csv:"
-if [[ -z $NOOP ]]
+info "Get the sessions. The data is written to sessions.csv."
+if [[ -z $NOOP ]]  # For NOOP, don't send the output to sessions.csv
 then
 	scripts/get-sessions.sh --name $name_prefix ${range[@]} > sessions.csv
 else
-	$NOOP scripts/get-sessions.sh --name $name_prefix ${range[@]}
+	scripts/get-sessions.sh --name $name_prefix ${range[@]}
 fi
-echo "wc sessions.csv"
+info "wc sessions.csv"
 $NOOP wc sessions.csv

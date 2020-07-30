@@ -6,7 +6,11 @@ This README describes the process for setting up a live event.
 
 The working assumption at this time is that you will create a single platform account, a single project, and one session _per attendee_. The `scripts` folder contains `zsh` scripts for this purpose.
 
-> **WARNING:** Some of the scripts are **not** `bash` compatible!
+> **WARNING:** The scripts are **not** `bash` compatible!
+
+## End to End Testing
+
+There is a `run-all.sh` script in this directory that can be used to run the entire setup sequence, in principle. It is mostly intended as an end-to-end test script, as it may not be realistic in most cases to run it as is. Note there are several places where it pauses for tasks to finish; you have to enter information at the prompt to continue. Look for `PROMPT ==>` strings.
 
 ## Setup Beforehand
 

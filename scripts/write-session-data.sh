@@ -2,6 +2,7 @@
 
 # WARNING: THE TEXT BELOW HAS TO BE UPDATED FOR EACH EVENT!!
 
+# The next few lines setup the help.
 script_name=$0
 tagline="Read the output of get-sessions.sh and write text for email distribution about the sessions"
 

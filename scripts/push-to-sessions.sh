@@ -4,10 +4,11 @@
 dir=$(dirname $0)
 . $dir/utils.sh
 
+# The next few lines setup the help.
 script_name=$0
 tagline="Push code updates to running sessions, e.g., notebook bug fixes"
 cmd_opts=(session_name range)
-post_help_messages=slow_warning
+post_help_messages=$(slow_warning)
 
 range=()
 name_prefix=$DEFAULT_NAME_PREFIX
@@ -35,16 +36,14 @@ do
 done
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0 MN0
-do
-	echo "Pushing code updates to sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N"
+compute_range ${range[@]} | read M N M0 N0 MN0
+info "Pushing code updates to sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N"
 
-	for n in {$M..$N}
-	do
-		n0=$(zero_pad $n)
-		npn=${name_prefix}-${n0}
-		echo "Pushing the latest code to session $n0, named ${npn}..."
-		$NOOP anyscale push ${npn}
-	done
+for n in {$M..$N}
+do
+	n0=$(zero_pad $n)
+	npn=${name_prefix}-${n0}
+	info "Pushing the latest code to session $n0, named ${npn}..."
+	$NOOP anyscale push ${npn}
 done
 info "Finished!"

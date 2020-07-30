@@ -4,6 +4,7 @@
 dir=$(dirname $0)
 . $dir/utils.sh
 
+# The next few lines setup the help.
 script_name=$0
 tagline="Stops and terminates the specified sessions"
 cmd_opts=(session_name range)
@@ -34,22 +35,15 @@ do
 	shift
 done
 
-mkdir -p log
-
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0 MN0
-do
-	logfile=log/terminate-$MN0.log
-	echo "Stopping and terminating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:"
- 	echo "Writing output to file $logfile"
+compute_range ${range[@]} | read M N M0 N0 MN0
+info "Stopping and terminating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:"
 
-	mkdir -p log
-	for n in {$M..$N}
-	do
-		n0=$(zero_pad $n)
-		npn=${name_prefix}-${n0}
-		echo "Session $n0, named $npn."
-		$NOOP anyscale stop --terminate "$npn"
-	done > $logfile 2>&1
-done
+for n in {$M..$N}
+do
+	n0=$(zero_pad $n)
+	npn=${name_prefix}-${n0}
+	info "Session $n0, named $npn."
+	$NOOP anyscale stop --terminate "$npn"
+done 2>&1
 info "Finished!"

@@ -4,6 +4,7 @@
 dir=$(dirname $0)
 . $dir/utils.sh
 
+# The next few lines setup the help.
 script_name=$0
 tagline="Create N sessions"
 cmd_opts=(session_name snapshot_id range)
@@ -43,21 +44,15 @@ done
 declare -a snapshot_opt
 [[ -n $snapshot ]] && snapshot_opt=("--snapshot" "$snapshot")
 
-mkdir -p log
-
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0 MN0
-do
-	logfile=log/create-$MN0.log
-	echo "Creating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N."
- 	echo "Writing output to file $logfile"
+compute_range ${range[@]} | read M N M0 N0 MN0
+info "Creating sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N."
 
-	for n in {$M..$N}
-	do
-		n0=$(zero_pad $n)
-		npn=${name_prefix}-${n0}
-		echo "Creating session $n0, named $npn ..."
-		$NOOP anyscale start --session-name $npn ${snapshot_opt[@]}
-	done > $logfile 2>&1
-done
+for n in {$M..$N}
+do
+	n0=$(zero_pad $n)
+	npn=${name_prefix}-${n0}
+	info "Creating session $n0, named $npn ..."
+	$NOOP anyscale start --session-name $npn ${snapshot_opt[@]}
+done 2>&1
 info "Finished!"

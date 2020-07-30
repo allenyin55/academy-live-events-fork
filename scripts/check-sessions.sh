@@ -4,10 +4,11 @@
 dir=$(dirname $0)
 . $dir/utils.sh
 
+# The next few lines setup the help.
 script_name=$0
 tagline="Check that Juypter Lab is properly configured in sessions"
 cmd_opts=(session_name range)
-post_help_messages=slow_warning
+post_help_messages=$(slow_warning)
 
 range=()
 name_prefix=$DEFAULT_NAME_PREFIX
@@ -35,19 +36,13 @@ do
 done
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
-compute_range ${range[@]} | while read M N M0 N0 MN0
+compute_range ${range[@]} | read M N M0 N0 MN0
+info "Checking Jupyter Lab in sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:"
+for n in {$M..$N}
 do
-	logfile=log/check-$MN0.log
-	echo "Checking Jupyter Lab in sessions numbered N = $M0 to $N0 with name format ${name_prefix}-N:"
- 	echo "Writing output to file $logfile"
-
-	mkdir -p log
-	for n in {$M..$N}
-	do
-		n0=$(zero_pad $n)
-		npn=${name_prefix}-${n0}
-		echo "Checking session $n0, named $npn ..."
-		$NOOP anyscale exec -n "$npn" "/home/ubuntu/anaconda3/bin/jupyter labextension list"
-	done > $logfile 2>&1
-done
+	n0=$(zero_pad $n)
+	npn=${name_prefix}-${n0}
+	info "Checking session $n0, named $npn ..."
+	$NOOP anyscale exec -n "$npn" "/home/ubuntu/anaconda3/bin/jupyter labextension list"
+done 2>&1
 info "Finished!"

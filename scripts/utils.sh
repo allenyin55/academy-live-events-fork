@@ -7,10 +7,17 @@ let DEFAULT_M=1
 let DEFAULT_N=1
 
 # Construct help in pieces:
+help_opt='[-h | --help]'
 session_name_opt='[-n | --name name]'
 project_name_opt='[-p | --project name]'
 snapshot_id_opt='[-s | --snapshot id]'
 range_opt='[N | M N | M-N | M:N]'
+
+help_help() {
+    cat <<EOF
+    -h | --help           Print this message and exit.
+EOF
+}
 
 session_name_help() {
     cat <<EOF
@@ -56,23 +63,22 @@ EOF
 help() {
     cmd_flags=( $(for x in ${cmd_opts[@]}; do echo $(echo \$${x}_opt); done) )
     cmd_helps=( $(for x in ${cmd_opts[@]}; do echo $(echo ${x}_help); done) )
-    cat <<EOF
+    cat << EOF
 $script_name: $tagline.
 
-Usage: $script_name [-h | --help] $(eval echo $(echo ${cmd_flags[@]}))
+Usage: $script_name $(eval echo $(echo ${cmd_flags[@]}))
 Where:
-    -h | --help           Print this message and exit.
 EOF
     for h in ${cmd_helps}
     do
         eval $(echo $h)
     done
-    eval $(echo $post_help_messages)
 
     cat <<EOF2
+$post_help_messages
 
 TIP: To see what commands will be executed without running them, run as follows:
-  NOOP=echo $script_name ...
+     NOOP=info $script_name ...
 EOF2
 }
 
@@ -81,24 +87,36 @@ empty_help() {
     cat <<EOF
 $script_name: $tagline.
 
-Usage: $script_name [-h|--help]
+Usage: $script_name $help_opt
 Where:
-    -h | --help    Print this message and exit
+$(help_help)
 EOF
 }
 
 error() {
-    echo "ERROR:   $@" >&2
+    echo "ERROR: ($script_name) $@" >&2
     help >&2
     exit 1
 }
 
 warning() {
-    echo "WARNING: $@" >&2
+    noln=
+    if [[ $1 = "-n" ]]
+    then
+        noln="-n"
+        shift
+    fi
+    echo $noln "WARN: ($script_name)  $@" >&2
 }
 
 info() {
-    echo "INFO:    $@" >&2
+    noln=
+    if [[ $1 = "-n" ]]
+    then
+        noln="-n"
+        shift
+    fi
+    echo $noln "INFO: ($script_name)  $@" >&2
 }
 
 # usage zero_pad N [number_digits]
@@ -118,17 +136,15 @@ zero_pad() {
 # split_range N  # implies M==1
 # If N<M, the scripts will actually count DOWN from M to N!
 split_range() {
-    echo "$@" | sed -e 's/[:-]/ /' | while read min max
-    do
-        if [[ -z $max ]]
-        then
-            M=1
-            N=$min
-        else
-            M=$min
-            N=$max
-        fi
-    done
+    echo "$@" | sed -e 's/[:-]/ /' | read min max
+    if [[ -z $max ]]
+    then
+        M=1
+        N=$min
+    else
+        M=$min
+        N=$max
+    fi
     echo $M $N
 }
 
@@ -141,10 +157,7 @@ compute_range() {
     [[ $# -gt 2 ]] && error "Unexpected arguments $@"
     if [[ $# -gt 0 ]]
     then
-        split_range "$@" | while read m n; do
-            M=$m
-            N=$n
-        done
+        split_range "$@" | read M N
     fi
 
     M0=$(zero_pad $M)
