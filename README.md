@@ -10,7 +10,7 @@ The working assumption at this time is that you will create a single platform ac
 
 ## End to End Testing
 
-There is a `scripts/run-all.sh` script that can be used to run the entire setup sequence, in principle. See the section at the end of this README, _Using run-all.sh for End to End Testing_, for more details.
+There is a `scripts/run-all.sh` script that can be used to run the entire setup sequence, in principle. It was mostly designed for end-to-end product testing, but it could be all you need. See the section at the end of this README, _Using run-all.sh for End to End Testing_, for more details.
 
 ## Versioning This Repo
 
