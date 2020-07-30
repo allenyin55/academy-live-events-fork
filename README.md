@@ -156,7 +156,7 @@ This script uses `anyscale ray exec-cmd` to run an Academy repo script `/usr/ubu
 
 > **WARNING:** This script runs synchronously through each session, one at a time, to avoid stressing the Anyscale gateway.
 
-## Check the Sessions
+## Check the Sessions (Optional)
 
 A sanity check to make sure the Jupyter Lab extensions are properly installed and up to date. This script is very similar to `fix-sessions.sh` in structure and arguments. You should run this script even though `fix-sessions.sh` is no longer necessary:
 

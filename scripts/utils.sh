@@ -1,6 +1,7 @@
 # Source this file to load common utilities.
 
 DEFAULT_CLUSTER_YAML="ray-project/cluster.yaml"
+DEFAULT_PROJECT_YAML="ray-project/project.yaml"
 DEFAULT_NAME_PREFIX="academy-user"
 let DEFAULT_M=1
 let DEFAULT_N=1
@@ -13,13 +14,13 @@ range_opt='[N | M N | M-N | M:N]'
 
 session_name_help() {
     cat <<EOF
-    -n | --name name      The name prefix to use. Default is "$DEFAULT_NAME_PREFIX". The number will be appended to it.
+    -n | --name name      The session name prefix to use. Default is "$DEFAULT_NAME_PREFIX". The number will be appended to it.
 EOF
 }
 
 project_name_help() {
     cat <<EOF
-    -p | --project name   The name of your Anyscale project; will correspond to /usr/ubuntu/<project_name> directory.
+    -p | --project name   The name of the Anyscale project; will correspond to /usr/ubuntu/<project_name> directory.
                           Defaults to the value for "cluster_name" in ray-project/cluster.yaml.
 EOF
 }
@@ -34,7 +35,7 @@ EOF
 
 range_help() {
     cat <<EOF
-    N | M N | M-N | M:N   Four ways to specify how many sessions to create or a range of numbers from N-M, inclusive.
+    N | M N | M-N | M:N   Four ways to specify the range of session numbers from N-M, inclusive.
                           With one value N, M defaults to 1. Default is $M-$N.
 EOF
 }
@@ -42,8 +43,7 @@ EOF
 slow_warning() {
     cat <<EOF
 
-WARNING: It currently isn't possible to run this in parallel reliably, so this script
-         runs ONE AT A TIME, which is very slow.
+WARNING: Some commands must be run serially, which can be quite slow.
 EOF
 }
 
@@ -68,6 +68,12 @@ EOF
         eval $(echo $h)
     done
     eval $(echo $post_help_messages)
+
+    cat <<EOF2
+
+TIP: To see what commands will be executed without running them, run as follows:
+  NOOP=echo $script_name ...
+EOF2
 }
 
 # When you want to use this "empty" help, override help in the script to call this:
@@ -149,8 +155,21 @@ compute_range() {
     echo $M $N $M0 $N0 $MN0
 }
 
+edit_project_name() {
+    project_name=$1
+    shift
+    yamls=("$@")
+    [[ ${#yamls[@]} -eq 0 ]] && yamls=($DEFAULT_CLUSTER_YAML $DEFAULT_PROJECT_YAML)
+
+    for y in "${yamls[@]}"
+    do
+        $NOOP sed -i.bak -e "s/^\(.*name\): \(.*\)$/\1: $project_name/" $y
+    done
+}
+
 get_project_name() {
     yaml="$@"
     [[ -z $yaml ]] && yaml=$DEFAULT_CLUSTER_YAML
     grep cluster_name "$yaml" | sed -e 's/^[^:]*: *\(.*\)/\1/'
 }
+
