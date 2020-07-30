@@ -72,11 +72,13 @@ $NOOP cp -rf ./ray-project $av/ray-project
 info "Switch to the academy directory."
 $NOOP cd $av
 scripts_dir=../scripts  # will be the new scripts dir...
+sessions_csv=../sessions.csv
 if [[ -z $NOOP ]]
 then
 	info "Working directory: $PWD"
 else
 	scripts_dir=scripts   # ... unless we are running NOOP=..., since the previous cd not executed.
+	sessions_csv=sessions.csv
 fi
 
 if [[ -n $project_name ]]
@@ -113,12 +115,12 @@ then
 	$scripts_dir/check-sessions.sh --name $name_prefix $N $N
 fi
 
-info "Get the sessions. The data is written to sessions.csv."
+info "Get the sessions. The data is written to $parent/sessions.csv."
 if [[ -z $NOOP ]]  # For NOOP, don't send the output to sessions.csv
 then
-	$scripts_dir/get-sessions.sh --name $name_prefix ${range[@]} > sessions.csv
+	$scripts_dir/get-sessions.sh --name $name_prefix ${range[@]} > $sessions_csv
 else
 	$scripts_dir/get-sessions.sh --name $name_prefix ${range[@]}
 fi
-info "wc sessions.csv"
-$NOOP wc sessions.csv
+info "wc $sessions_csv"
+$NOOP wc $sessions_csv
