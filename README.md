@@ -252,6 +252,8 @@ There is a `scripts/run-all.sh` script that can be used to run the entire setup 
 Here's how to use `run-all.sh`:
 
 1. Clone this repo or better, download the tagged version corresponding to the `academy` repo you'll use.
+    * Here are the [`academy` releases](https://github.com/anyscale/academy/releases).
+    * Here are the [`academy-live-events` releases](https://github.com/anyscale/academy-live-events/releases).
 2. Change to the cloned or unzipped directory.
 3. Run `scripts/run-all.sh version`, where `version` is a tag or release for the `academy` repo (required argument). (Don't cd to `scripts` and run it from there!)
 
