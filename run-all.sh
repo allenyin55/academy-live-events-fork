@@ -55,21 +55,22 @@ done
 [[ -z $version ]] && error "The version argument is required."
 
 info "Download the academy and academy-live-events using version tag: $version"
+version2=$(echo $version | sed -e 's/^v//')
 for ext in "" "-live-events"
 do
-	zip=academy$ext-$version.zip
+	zip=academy$ext-$version2.zip
 	$NOOP curl -o $zip https://codeload.github.com/anyscale/academy$ext/zip/$version
 	$NOOP unzip $zip
 done
 
 info "Copy the live event's version of ray-project over the academy's copy."
-$NOOP cp -rf academy-live-events/ray-project academy/ray-project
+$NOOP cp -rf academy-live-events-$version2/ray-project academy-$version2/ray-project
 
 info "Copy the live event's scripts directory to the academy."
-$NOOP cp -rf academy-live-events/scripts academy/
+$NOOP cp -rf academy-live-events-$version2/scripts academy-$version2/
 
 info "Switch to the academy directory."
-$NOOP cd academy
+$NOOP cd academy-$version2
 info "Working directory: $PWD"
 
 if [[ -n $project_name ]]

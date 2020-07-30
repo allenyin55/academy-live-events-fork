@@ -12,6 +12,10 @@ The working assumption at this time is that you will create a single platform ac
 
 There is a `run-all.sh` script in this directory that can be used to run the entire setup sequence, in principle. It is mostly intended as an end-to-end test script, as it may not be realistic in most cases to run it as is. Note there are several places where it pauses for tasks to finish; you have to enter information at the prompt to continue. Look for `PROMPT ==>` strings.
 
+## Versioning This Repo
+
+Use the same version tags for this repo that are used for the Academy repo, because `run-all.sh` requires a single version argument and it assumes they are in lock step!
+
 ## Setup Beforehand
 
 In most of the command examples below, I'll assume your current working directory is the root directory of your local copy if the [`academy` repo](https://github.com/anyscale/academy). In some cases, I'll assume the [`academy-live-events` repo](https://github.com/anyscale/academy) is a sister directory, i.e.,:
