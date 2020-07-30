@@ -7,7 +7,7 @@ dir=$(dirname $0)
 # The next few lines setup the help.
 script_name=$0
 tagline="Do post processing on sessions, e.g., fix Juypter Lab"
-cmd_opts=(session_name project_name range)
+cmd_opts=(help no_exec session_name project_name range)
 post_help_messages=$(slow_warning)
 
 range=()
@@ -21,6 +21,9 @@ do
 		-h|--help)
 			help
 			exit 0
+			;;
+		--no*)
+			no_exec
 			;;
 		-n|--name)
 			shift

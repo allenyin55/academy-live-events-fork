@@ -12,7 +12,7 @@ version_help() {
     version               The version tag of the academy and academy-live-events to use (required).
 EOF
 }
-cmd_opts=(version help session_name project_name range)
+cmd_opts=(version help no_exec session_name project_name range)
 read -r -d '' post_help_messages <<- EOM
 	This file is meant to be copied separately to another work directory and run there.
 	It clones the academy and academy-live-events repos into that directory.
@@ -33,6 +33,9 @@ do
 		-h|--help)
 			help
 			exit 0
+			;;
+		--no*)
+			no_exec
 			;;
 		-n|--name)
 			shift

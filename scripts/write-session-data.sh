@@ -21,6 +21,9 @@ do
 			help
 			exit 0
 			;;
+		--no*)
+			no_exec
+			;;
 		*)
 			error "Unexpected argument $1"
 			;;

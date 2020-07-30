@@ -7,7 +7,7 @@ dir=$(dirname $0)
 # The next few lines setup the help.
 script_name=$0
 tagline="Create N sessions"
-cmd_opts=(session_name snapshot_id range)
+cmd_opts=(help no_exec session_name snapshot_id range)
 post_help_messages=
 
 # TODO: Rather than fire all of them at once, do 20 or so at a time.
@@ -23,6 +23,9 @@ do
 		-h|--help)
 			help
 			exit 0
+			;;
+		--no*)
+			no_exec
 			;;
 		-n|--name)
 			shift

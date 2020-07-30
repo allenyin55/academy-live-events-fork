@@ -7,7 +7,7 @@ dir=$(dirname $0)
 # The next few lines setup the help.
 script_name=$0
 tagline="Write the session names, session ids, head-node IP addresses, juypter tokens, and URLs for the specified range of sessions, but only if they are ACTIVE."
-cmd_opts=(session_name range)
+cmd_opts=(help no_exec session_name range)
 post_help_messages=$(slow_warning)
 
 range=()
@@ -20,6 +20,9 @@ do
 		-h|--help)
 			help
 			exit 0
+			;;
+		--no*)
+			no_exec
 			;;
 		-n|--name)
 			shift

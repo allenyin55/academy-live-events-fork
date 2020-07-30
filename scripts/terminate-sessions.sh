@@ -7,7 +7,7 @@ dir=$(dirname $0)
 # The next few lines setup the help.
 script_name=$0
 tagline="Stops and terminates the specified sessions"
-cmd_opts=(session_name range)
+cmd_opts=(help no_exec session_name range)
 post_help_messages=
 
 range=()
@@ -20,6 +20,9 @@ do
 		-h|--help)
 			help
 			exit 0
+			;;
+		--no*)
+			no_exec
 			;;
 		-n|--name)
 			shift

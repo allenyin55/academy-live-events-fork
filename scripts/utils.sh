@@ -8,6 +8,7 @@ let DEFAULT_N=1
 
 # Construct help in pieces:
 help_opt='[-h | --help]'
+no_exec_opt='[--no | --no-exec]'
 session_name_opt='[-n | --name name]'
 project_name_opt='[-p | --project name]'
 snapshot_id_opt='[-s | --snapshot id]'
@@ -16,6 +17,12 @@ range_opt='[N | M N | M-N | M:N]'
 help_help() {
     cat <<EOF
     -h | --help           Print this message and exit.
+EOF
+}
+
+no_exec_help() {
+    cat <<EOF
+    --no | --no-exec      Just print the commands, don't execute them.
 EOF
 }
 
@@ -77,8 +84,8 @@ EOF
     cat <<EOF2
 $post_help_messages
 
-TIP: To see what commands will be executed without running them, run as follows:
-     NOOP=info $script_name ...
+TIP: To see what commands will be executed without running them, use --no-exec.
+     This is equivalent to running: NOOP=info $script_name ...
 EOF2
 }
 
@@ -87,9 +94,13 @@ empty_help() {
     cat <<EOF
 $script_name: $tagline.
 
-Usage: $script_name $help_opt
+Usage: $script_name $help_opt $no_exec_opt
 Where:
 $(help_help)
+$(no_exec_help)
+
+TIP: To see what commands will be executed without running them, use --no-exec.
+     This is equivalent to running: NOOP=info $script_name ...
 EOF
 }
 
@@ -117,6 +128,10 @@ info() {
         shift
     fi
     echo $noln "INFO: ($script_name)  $@" >&2
+}
+
+no_exec() {
+    export NOOP=info
 }
 
 # usage zero_pad N [number_digits]
