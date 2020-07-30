@@ -47,7 +47,8 @@ done
 # The "assigned email" field is blank. It's here for convenience when importing the
 # CSV file into a spreadsheet to allow users to self-assign themselves a session,
 # e.g., for Anyscale in-house testing.
-echo "SESSION,ID,DASHBOARD_IP,JUPYTER_TOKEN,JUPYTER_URL,DASHBOARD_URL,TENSORBOARD_URL,ASSIGNED_EMAIL"
+
+[[ -z $NOOP ]] && echo "SESSION,ID,DASHBOARD_IP,JUPYTER_TOKEN,JUPYTER_URL,DASHBOARD_URL,TENSORBOARD_URL,ASSIGNED_EMAIL"
 
 [[ ${#range[@]} -eq 0 ]] && range=($M $N)
 compute_range ${range[@]} | read M N M0 N0 MN0
@@ -57,27 +58,25 @@ for n in {$M..$N}
 do
 	n0=$(zero_pad $n)
 	npn=${name_prefix}-${n0}
-	if [[ -z $sessions[$npn] ]]
+	if [[ -n $NOOP ]]
+	then
+		$NOOP anyscale ray get-head-ip $npn
+		$NOOP anyscale exec -n "$npn" '~/anaconda3/bin/jupyter notebook list'
+	elif [[ -z $sessions[$npn] ]]
 	then
 		warning "Session $npn wasn't found in 'anyscale list sessions'. Skipping..." 1>&2
 	else
-		if [[ -z $NOOP ]]
-		then
-			ip=$(anyscale ray get-head-ip $npn 2> /dev/null)
-			anyscale exec -n "$npn" '~/anaconda3/bin/jupyter notebook list' | \
-				grep '^http' | sed -e 's?.*sessions/\([0-9]*\)/.*token=\([^ ]*\).*?\1 \2?' | \
-				while read id token
-				do
-					durl="http://$ip:8081/auth/?token=$token&redirect_to=dashboard"
-					jurl="https://anyscale.dev/sessions/$id/jupyter/lab?token=$token"
-					turl="https://anyscale.dev/sessions/$id/auth/?token=$token&session_id=$id&redirect_to=tensorboard"
+		ip=$(anyscale ray get-head-ip $npn 2> /dev/null)
+		anyscale exec -n "$npn" '~/anaconda3/bin/jupyter notebook list' | \
+			grep '^http' | sed -e 's?.*sessions/\([0-9]*\)/.*token=\([^ ]*\).*?\1 \2?' | \
+			while read id token
+			do
+				durl="http://$ip:8081/auth/?token=$token&redirect_to=dashboard"
+				jurl="https://anyscale.dev/sessions/$id/jupyter/lab?token=$token"
+				turl="https://anyscale.dev/sessions/$id/auth/?token=$token&session_id=$id&redirect_to=tensorboard"
 
-					echo "$npn,$id,$ip,$token,$jurl,$durl,$turl,"
-				done
-		else
-			$NOOP anyscale ray get-head-ip $npn
-			$NOOP anyscale exec -n "$npn" '~/anaconda3/bin/jupyter notebook list'
-		fi
+				echo "$npn,$id,$ip,$token,$jurl,$durl,$turl,"
+			done
 	fi
 done
 info "Finished!"
