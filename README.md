@@ -10,11 +10,11 @@ The working assumption at this time is that you will create a single platform ac
 
 ## End to End Testing
 
-There is a `run-all.sh` script in this directory that can be used to run the entire setup sequence, in principle. It is mostly intended as an end-to-end test script, as it may not be realistic in most cases to run it as is. Note there are several places where it pauses for tasks to finish; you have to enter information at the prompt to continue. Look for `PROMPT ==>` strings.
+There is a `scripts/run-all.sh` script that can be used to run the entire setup sequence, in principle. See the section at the end of this README, _Using run-all.sh for End to End Testing_, for more details.
 
 ## Versioning This Repo
 
-Use the same version tags for this repo that are used for the Academy repo, because `run-all.sh` requires a single version argument and it assumes they are in lock step!
+It's recommended to use the same version tags for this repo that are used for the Academy repo, so that you hopefully they are kept consistent.
 
 ## Setup Beforehand
 
@@ -243,4 +243,22 @@ Tell the students you will leave the sessions running for some additional hours 
 ```shell
 scripts/terminate-sessions.sh M N
 ```
+
+
+## Using run-all.sh for End to End Testing
+
+There is a `scripts/run-all.sh` script that can be used to run the entire setup sequence, in principle. It is mostly intended as an end-to-end test script, as it may not be realistic in most cases to run it as is. Note there are several places where it pauses for tasks to finish; you have to enter information at the prompt to continue. Look for `PROMPT ==>` strings.
+
+Here's how to use `run-all.sh`:
+
+1. Clone this repo or better, download the tagged version corresponding to the `academy` repo you'll use.
+2. Change to the cloned or unzipped directory.
+3. Run `scripts/run-all.sh version`, where `version` is a tag or release for the `academy` repo (required argument). (Don't cd to `scripts` and run it from there!)
+
+It will download the specified `academy` version zip file. Suppose `version = v2.0.0`, then the zip file will be `academy-2.0.0.zip` (yes, GitHub annoyingly drops the `v`) and it will be expanded into a directory `academy-2.0.0`, by `run-all.sh`, after which it wil change into that directory.
+
+This `academy-2.0.0` working directory will be used to create the Anyscale project and sessions.
+
+> **Tip:** To see what `run-all.sh` will do, try running it with `--no-exec`. It will echo all the commands, including the `scripts/*.sh` scripts it runs, without actually doing anything. This same argument works for all the `scripts/*.sh` scripts, too.
+
 

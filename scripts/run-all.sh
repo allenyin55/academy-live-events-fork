@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 dir=$(dirname $0)
-. $dir/scripts/utils.sh
+. $dir/utils.sh
 
 # The lines up to $@ parsing block setup the help.
 script_name=$0
@@ -55,26 +55,29 @@ do
 	esac
 	shift
 done
+
 [[ -z $version ]] && error "The version argument is required."
+$NOOP which -s anyscale || error "Please 'pip install anyscale'"
 
-info "Download the academy and academy-live-events using version tag: $version"
+info "Download an academy release using version tag: $version"
 version2=$(echo $version | sed -e 's/^v//')
-for ext in "" "-live-events"
-do
-	zip=academy$ext-$version2.zip
-	$NOOP curl -o $zip https://codeload.github.com/anyscale/academy$ext/zip/$version
-	$NOOP unzip $zip
-done
+av=academy-$version2
+zip=$av.zip
+$NOOP curl -o $zip https://codeload.github.com/anyscale/academy/zip/$version
+$NOOP unzip $zip
 
-info "Copy the live event's version of ray-project over the academy's copy."
-$NOOP cp -rf academy-live-events-$version2/ray-project academy-$version2/ray-project
-
-info "Copy the live event's scripts directory to the academy."
-$NOOP cp -rf academy-live-events-$version2/scripts academy-$version2/
+info "Copy academy-live-event's version of ray-project over the academy's copy."
+$NOOP cp -rf ./ray-project $av/ray-project
 
 info "Switch to the academy directory."
-$NOOP cd academy-$version2
-info "Working directory: $PWD"
+$NOOP cd $av
+scripts_dir=../scripts  # will be the new scripts dir...
+if [[ -z $NOOP ]]
+then
+	info "Working directory: $PWD"
+else
+	scripts_dir=scripts   # ... unless we are running NOOP=..., since the previous cd not executed.
+fi
 
 if [[ -n $project_name ]]
 then
@@ -83,10 +86,7 @@ else
 	project_name=$(get_project_name)
 fi
 
-
-$NOOP which -s anyscale || error "Please 'pip install anyscale'"
-
-info "Create the project $project_name."
+info "Create the project named $project_name"
 $NOOP anyscale init --requirements ray-project/requirements.txt
 
 info -n "PROMPT ==> Enter the snapshot id just created (or leave blank to create a new one) ==> "
@@ -95,7 +95,7 @@ snapshot_args=()
 [[ -n $id ]] && snapshot_args=("--snapshot" $id)
 
 info "Creating sessions."
-scripts/create-sessions.sh ${snapshot_args[@]} --name $name_prefix ${range[@]}
+$scripts_dir/create-sessions.sh ${snapshot_args[@]} --name $name_prefix ${range[@]}
 
 info "Click the link for your anyscale.dev project page output above."
 info -n "PROMPT ==> Watch the sessions start. When they are ready, hit enter to continue ==> "
@@ -105,19 +105,19 @@ compute_range ${range[@]} | read M N M0 N0 MN0
 [[ $M != $N ]] && fandl=" first and last"
 info "Sanity check of$fandl session."
 info "Check session - ${name_prefix}-$M0."
-scripts/check-sessions.sh --name $name_prefix $M $M
+$scripts_dir/check-sessions.sh --name $name_prefix $M $M
 if [[ $M != $N ]]
 then
 	info "Check session - ${name_prefix}-$N0."
-	scripts/check-sessions.sh --name $name_prefix $N $N
+	$scripts_dir/check-sessions.sh --name $name_prefix $N $N
 fi
 
 info "Get the sessions. The data is written to sessions.csv."
 if [[ -z $NOOP ]]  # For NOOP, don't send the output to sessions.csv
 then
-	scripts/get-sessions.sh --name $name_prefix ${range[@]} > sessions.csv
+	$scripts_dir/get-sessions.sh --name $name_prefix ${range[@]} > sessions.csv
 else
-	scripts/get-sessions.sh --name $name_prefix ${range[@]}
+	$scripts_dir/get-sessions.sh --name $name_prefix ${range[@]}
 fi
 info "wc sessions.csv"
 $NOOP wc sessions.csv
