@@ -81,13 +81,14 @@ fi
 
 if [[ -n $project_name ]]
 then
+	info "Changing the project name in the ray-project/*.yaml files to $project_name"
 	edit_project_name $project_name
 else
 	project_name=$(get_project_name)
 fi
 
 info "Create the project named $project_name"
-$NOOP anyscale init --requirements ray-project/requirements.txt
+$NOOP anyscale init --name $project_name --requirements ray-project/requirements.txt
 
 info -n "PROMPT ==> Enter the snapshot id just created (or leave blank to create a new one) ==> "
 read id
@@ -97,7 +98,7 @@ snapshot_args=()
 info "Creating sessions."
 $scripts_dir/create-sessions.sh ${snapshot_args[@]} --name $name_prefix ${range[@]}
 
-info "Click the link for your anyscale.dev project page output above."
+info "Open the link for your anyscale.dev project page that was output above."
 info -n "PROMPT ==> Watch the sessions start. When they are ready, hit enter to continue ==> "
 read toss
 
