@@ -5,6 +5,7 @@ cluster_name: anyscale-academy
 
 # The maximum number of workers nodes to launch in addition to the head
 # node. This takes precedence over min_workers. min_workers defaults to 0.
+min_workers: 0
 max_workers: 0
 
 # Cloud-provider specific configuration.
@@ -21,6 +22,8 @@ provider:
 head_node:
     InstanceType: m5.xlarge
     ImageId: latest_dlami
+    SecurityGroupIds: [sg-07838b6a01e6c456d]
+    SubnetIds: [subnet-cf362184]
 
     # You can provision additional disk space with a conf as follows
     BlockDeviceMappings:
@@ -28,23 +31,17 @@ head_node:
           Ebs:
               VolumeSize: 100
 
+worker_nodes:
+    InstanceType: m5.xlarge
+    ImageId: latest_dlami
+    SecurityGroupIds: [sg-07838b6a01e6c456d]
+    SubnetIds: [subnet-cf362184]
+
 
 # How Ray will authenticate with newly launched nodes.
 auth:
     ssh_user: ubuntu
 
 # List of shell commands to run to set up nodes.
-setup_commands:
-    - echo '. /home/ubuntu/anaconda3/etc/profile.d/conda.sh' >> ~/.bashrc
-    - echo "conda deactivate; conda activate tensorflow2_p36" >> ~/.bashrc
-    - conda install -y nodejs
-    - /home/ubuntu/anaconda3/bin/pip list | grep jupyter
-    - /home/ubuntu/anaconda3/bin/pip install -U jupyterlab
-    - /home/ubuntu/anaconda3/bin/pip install -U jupyter-server-proxy
-    - /home/ubuntu/anaconda3/bin/pip install -U notebook
-    - /home/ubuntu/anaconda3/bin/pip list | grep jupyter
-    - /home/ubuntu/anaconda3/bin/jupyter labextension install "@pyviz/jupyterlab_pyviz"
-    - /home/ubuntu/anaconda3/bin/jupyter labextension update --all
-    - /home/ubuntu/anaconda3/bin/jupyter lab build
-    - /home/ubuntu/anaconda3/bin/jupyter labextension list
-
+setup_commands: 
+  - pip install ray
