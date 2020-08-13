@@ -5,7 +5,6 @@ cluster_name: anyscale-academy
 
 # The maximum number of workers nodes to launch in addition to the head
 # node. This takes precedence over min_workers. min_workers defaults to 0.
-min_workers: 0
 max_workers: 0
 
 # Cloud-provider specific configuration.
@@ -21,20 +20,12 @@ provider:
 head_node:
     InstanceType: m5.xlarge
     ImageId: latest_dlami
-    SecurityGroupIds: [sg-07838b6a01e6c456d]
-    SubnetIds: [subnet-cf362184]
 
     # You can provision additional disk space with a conf as follows
     BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
               VolumeSize: 100
-
-worker_nodes:
-    InstanceType: m5.xlarge
-    ImageId: latest_dlami
-    SecurityGroupIds: [sg-07838b6a01e6c456d]
-    SubnetIds: [subnet-cf362184]
 
 
 # How Ray will authenticate with newly launched nodes.
