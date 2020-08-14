@@ -22,7 +22,7 @@ provider:
 head_node:
     InstanceType: m5.xlarge
     ImageId: latest_dlami
-    SubnetIds: [subnet-072a184d40d638c8b]
+    SubnetIds: [subnet-06f8f1d3ec1a755fb]
 
     # You can provision additional disk space with a conf as follows
     BlockDeviceMappings:
@@ -33,7 +33,7 @@ head_node:
 worker_nodes:
     InstanceType: m5.xlarge
     ImageId: latest_dlami
-    SubnetIds: [subnet-072a184d40d638c8b]
+    SubnetIds: [subnet-06f8f1d3ec1a755fb]
 
 
 # How Ray will authenticate with newly launched nodes.
