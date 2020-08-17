@@ -22,6 +22,7 @@ provider:
 head_node:
     InstanceType: m5.xlarge
     ImageId: latest_dlami
+    SecurityGroupIds: [sg-0001d60ce91e79136]
     SubnetIds: [subnet-06f8f1d3ec1a755fb]
 
     # You can provision additional disk space with a conf as follows
@@ -33,6 +34,7 @@ head_node:
 worker_nodes:
     InstanceType: m5.xlarge
     ImageId: latest_dlami
+    SecurityGroupIds: [sg-0001d60ce91e79136]
     SubnetIds: [subnet-06f8f1d3ec1a755fb]
 
 
