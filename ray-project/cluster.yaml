@@ -22,6 +22,7 @@ provider:
 head_node:
     InstanceType: m5.xlarge
     ImageId: latest_dlami
+    KeyName: anyscale-user-2_us-west-2_key-1
     SecurityGroupIds: [sg-0001d60ce91e79136]
     SubnetIds: [subnet-06f8f1d3ec1a755fb]
 
@@ -34,6 +35,7 @@ head_node:
 worker_nodes:
     InstanceType: m5.xlarge
     ImageId: latest_dlami
+    KeyName: anyscale-user-2_us-west-2_key-1
     SecurityGroupIds: [sg-0001d60ce91e79136]
     SubnetIds: [subnet-06f8f1d3ec1a755fb]
 
@@ -41,6 +43,7 @@ worker_nodes:
 # How Ray will authenticate with newly launched nodes.
 auth:
     ssh_user: ubuntu
+    ssh_private_key: /root/.ssh/anyscale-user-2_us-west-2_key-1.pem
 
 # List of shell commands to run to set up nodes.
 setup_commands: 
